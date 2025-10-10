@@ -10,5 +10,8 @@ namespace EF
     public class MyDbContext : DbContext
     {
         //дефолты, юники, каскадное удаление, лейзи лоадинг = фолс
+
+        public MyDbContext(DbContextOptions<MyDbContext> options)
+            : base(options) { }
     }
 }

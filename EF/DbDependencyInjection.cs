@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using EF.Repository;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -10,9 +11,13 @@ namespace EF
 {
     public static class DbDependencyInjection
     {
-        public static IServiceCollection Add(this IServiceCollection services, string connectionString)
+        public static IServiceCollection DataBaseDI(this IServiceCollection services, string connectionString)
         {
             services.AddDbContext<MyDbContext>(options => options.UseSqlite(connectionString));
+
+            services.AddScoped<UserRepository>();
+            services.AddScoped<MangaRepository>();
+            services.AddScoped<CollectionRepository>();
 
             return services;
         }

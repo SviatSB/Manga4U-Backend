@@ -1,3 +1,5 @@
+using EF;
+using Microsoft.Extensions.Configuration;
 
 namespace WEBAPI
 {
@@ -13,6 +15,21 @@ namespace WEBAPI
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            //==MyServices==
+
+            string conString;
+            if (builder.Configuration.GetValue<bool>("Config:UseInMemoryDB"))
+            {
+                conString = builder.Configuration.GetConnectionString("InMemoryConnection");
+            }
+            else
+            {
+                conString = builder.Configuration.GetConnectionString("InMemoryConnection");
+            }
+            builder.Services.DataBaseDI(conString);
+
+            //==MyServices==
 
             var app = builder.Build();
 
