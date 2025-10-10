@@ -25,7 +25,7 @@ namespace WEBAPI
             }
             else
             {
-                conString = builder.Configuration.GetConnectionString("InMemoryConnection");
+                conString = builder.Configuration.GetConnectionString("DefaultConnection");
             }
             builder.Services.DataBaseDI(conString);
 
