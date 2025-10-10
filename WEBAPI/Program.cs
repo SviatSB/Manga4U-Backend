@@ -16,7 +16,7 @@ namespace WEBAPI
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            //==MyServices==
+            //==--==--==--==--==
 
             string conString;
             if (builder.Configuration.GetValue<bool>("Config:UseInMemoryDB"))
@@ -29,7 +29,8 @@ namespace WEBAPI
             }
             builder.Services.DataBaseDI(conString);
 
-            //==MyServices==
+
+            //==--==--==--==--==
 
             var app = builder.Build();
 
@@ -44,6 +45,11 @@ namespace WEBAPI
 
             app.UseAuthorization();
 
+            //==--==--==--==--==
+
+            app.UseStaticFiles();
+
+            //==--==--==--==--==
 
             app.MapControllers();
 
