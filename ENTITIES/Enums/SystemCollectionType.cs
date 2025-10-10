@@ -4,9 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ENTITIES.Models
+namespace ENTITIES.Enums
 {
-    public class Profile
+    public enum SystemCollectionType
     {
+        Favorite,
+        Reading,
+        WantToRead
     }
 }

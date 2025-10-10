@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,5 +9,21 @@ namespace ENTITIES.Models
 {
     public class Review
     {
+        //TODO unique для (user,manga)
+
+        public ulong Id { get; set; }
+
+        [Range(1,5)]
+        public int Stars { get; set; }  // 1-5
+        public string? Text { get; set; } = null; //nullable | has default = null;
+        public DateTime CreationTime { get; set; } = DateTime.Now; //notn null | has default
+
+
+        //FK and References
+        public int UserId { get; set; }  //not null
+        public int MangaId { get; set; }  //not null
+         
+        public User User { get; set; } = null!;
+        public Manga Manga { get; set; } = null!;
     }
 }

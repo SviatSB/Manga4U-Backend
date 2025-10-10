@@ -9,6 +9,6 @@ namespace EF
 {
     public class MyDbContext : DbContext
     {
-
+        //дефолты, юники, каскадное удаление, лейзи лоадинг = фолс
     }
 }
