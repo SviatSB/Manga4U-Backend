@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ENTITIES.Models;
 
-namespace EF
+namespace DATAINFRASTRUCTURE
 {
     public class MyDbContext : DbContext
     {
