@@ -8,7 +8,7 @@ namespace ENTITIES.Models
 {
     public class Manga
     {
-        public ulong Id { get; set; }
+        public long Id { get; set; }
         public string Name { get; set; } = null!; //not null
 
         //не знаю нужна ли тут такая инфа. Вобще можно даже без названия обходится

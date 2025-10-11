@@ -8,11 +8,11 @@ namespace ENTITIES.DTOs
 {
     public class CommentDto
     {
-        public ulong Id { get; set; }
+        public long Id { get; set; }
         public DateTime CreationTime { get; set; }
         public string Text { get; set; } = null!;
-        public int UserId { get; set; }
-        public int MangaId { get; set; }
+        public long UserId { get; set; }
+        public long MangaId { get; set; }
         
         // Optional: Include user and manga info for display purposes
         public string? UserNickname { get; set; }

@@ -8,7 +8,7 @@ namespace ENTITIES.DTOs
 {
     public class MangaDto
     {
-        public ulong Id { get; set; }
+        public long Id { get; set; }
         public string Name { get; set; } = null!;
         public string ExternalId { get; set; } = null!;
         

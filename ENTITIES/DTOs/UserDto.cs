@@ -8,7 +8,7 @@ namespace ENTITIES.DTOs
 {
     public class UserDto
     {
-        public ulong Id { get; set; }
+        public long Id { get; set; }
         public string Login { get; set; } = null!;
         public bool IsAdmin { get; set; }
         public string Nickname { get; set; } = null!;

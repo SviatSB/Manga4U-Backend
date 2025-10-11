@@ -11,7 +11,7 @@ namespace ENTITIES.Models
     {
         //TODO unique для (user,manga)
 
-        public ulong Id { get; set; }
+        public long Id { get; set; }
 
         [Range(1,5)]
         public int Stars { get; set; }  // 1-5
@@ -20,8 +20,8 @@ namespace ENTITIES.Models
 
 
         //FK and References
-        public int UserId { get; set; }  //not null
-        public int MangaId { get; set; }  //not null
+        public long UserId { get; set; }  //not null
+        public long MangaId { get; set; }  //not null
          
         public User User { get; set; } = null!;
         public Manga Manga { get; set; } = null!;

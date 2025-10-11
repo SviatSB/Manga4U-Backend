@@ -1,21 +1,23 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using ENTITIES.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ENTITIES.Models;
 
 namespace DATAINFRASTRUCTURE
 {
-    public class MyDbContext : DbContext
+    public class MyDbContext : IdentityDbContext<User, IdentityRole<long>, long>
     {
         //дефолты, юники, каскадное удаление, лейзи лоадинг = фолс
 
         public MyDbContext(DbContextOptions<MyDbContext> options)
             : base(options) { }
 
-        public DbSet<User> Users { get; set; }
+        //public DbSet<User> Users { get; set; }
         public DbSet<Collection> Collections { get; set; }
         public DbSet<Manga> Mangas { get; set; }
         public DbSet<Genre> Genres { get; set; }

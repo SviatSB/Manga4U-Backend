@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -7,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace ENTITIES.Models
 {
-    public class User
+    public class User : IdentityUser<long>
     {
-        public ulong Id { get; set; }
-        public string Login { get; set; } = null!; //not null | unique
-        public string PasswordHash { get; set; } = null!; //not null
-        public bool IsAdmin { get; set; } = false; //not null | has default
+        //public long Id { get; set; }
+        //public string Login { get; set; } = null!; //not null | unique
+        //public string PasswordHash { get; set; } = null!; //not null
+        //public bool IsAdmin { get; set; } = false; //not null | has default
         public string Nickname { get; set; } = null!;  //not null | has default (login+random number)
         public bool IsMuted { get; set; } = false; //not null | has default
         public DateTime? MuteExpire { get; set; } = null; //nullable | has default = null

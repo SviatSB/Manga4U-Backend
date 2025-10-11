@@ -8,7 +8,7 @@ namespace ENTITIES.Models
 {
     public class Genre
     {
-        public int Id { get; set; }  // PK
+        public long Id { get; set; }  // PK
         public string Name { get; set; } = null!; //not null
 
 
