@@ -1,6 +1,8 @@
-﻿using ENTITIES.DTOs.AccountDTOs;
+﻿using DATAINFRASTRUCTURE.Repository;
+using ENTITIES.DTOs.AccountDTOs;
 using ENTITIES.Interfaces;
 using ENTITIES.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 
@@ -8,47 +10,42 @@ namespace SERVICES.Services
 {
     public class AccountService : IAccountService
     {
-        private readonly UserManager<User> _userManager;
+        private readonly UserRepository _userRepository;
         private readonly IJwtTokenGenerator _jwtTokenGenerator;
 
-        public AccountService(UserManager<User> userManager, IJwtTokenGenerator jwtTokenGenerator)
+        public AccountService(UserRepository userRepository, IJwtTokenGenerator jwtTokenGenerator)
         {
-            _userManager = userManager;
+            _userRepository = userRepository;
             _jwtTokenGenerator = jwtTokenGenerator;
         }
 
         public async Task<IdentityResult> ChangePasswordAsync(string login, string oldPassword, string newPassword)
         {
-            var user = await _userManager.FindByNameAsync(login);
+            var user = await _userRepository.FindByNameAsync(login);
             if (user == null)
                 return IdentityResult.Failed(new IdentityError { Description = "user not exists" });
 
-            return await _userManager.ChangePasswordAsync(user, oldPassword, newPassword);
-        }
-
-        public async Task<string> GenerateTestTokenAsync(User user, IList<string> roles)
-        {
-            return _jwtTokenGenerator.GenerateToken(user, roles);
+            return await _userRepository.ChangePasswordAsync(user, oldPassword, newPassword);
         }
 
         public async Task<string?> LoginAsync(string login, string password)
         {
-            var user = await _userManager.FindByNameAsync(login);
+            var user = await _userRepository.FindByNameAsync(login);
             if (user == null)
                 return null;
 
-            var isValid = await _userManager.CheckPasswordAsync(user, password);
+            var isValid = await _userRepository.CheckPasswordAsync(user, password);
             if (!isValid)
                 return null;
 
-            var roles = await _userManager.GetRolesAsync(user);
+            var roles = await _userRepository.GetRolesAsync(user);
             return _jwtTokenGenerator.GenerateToken(user, roles);
         }
 
         public async Task<IdentityResult> RegisterAsync(string login, string password, string? nickname)
         {
 
-            var existing = await _userManager.FindByNameAsync(login);
+            var existing = await _userRepository.FindByNameAsync(login);
             if (existing != null)
                 return IdentityResult.Failed(new IdentityError { Description = "such login already exists" });
 
@@ -60,11 +57,33 @@ namespace SERVICES.Services
                 Nickname = nickname
             };
 
-            var result = await _userManager.CreateAsync(user, password);
+            var result = await _userRepository.CreateAsync(user, password);
             if (result.Succeeded)
-                await _userManager.AddToRoleAsync(user, "User");
+                await _userRepository.AddToRoleAsync(user, "User");
 
             return result;
+        }
+
+        public async Task<bool> ChangeNicknameAsync(string login, string newNickname)
+        {
+            var user = await _userRepository.FindByNameAsync(login);
+            if (user == null)
+                return false;
+
+            await _userRepository.ChangeNicknameAsync(user, newNickname);
+
+            return true;
+        }
+
+        public async Task<bool> ChangeAvatarAsync(string login, IFormFile file)
+        {
+            var user = await _userRepository.FindByNameAsync(login);
+            if (user == null)
+                return false;
+
+            await _userRepository.ChangeAvatarAsync(user, file);
+
+            return true;
         }
     }
 }

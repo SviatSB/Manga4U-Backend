@@ -1,5 +1,6 @@
 ﻿using ENTITIES.DTOs.AccountDTOs;
 using ENTITIES.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,7 @@ namespace ENTITIES.Interfaces
         Task<IdentityResult> RegisterAsync(string login, string password, string nickname);
         Task<string?> LoginAsync(string login, string password);
         Task<IdentityResult> ChangePasswordAsync(string login, string oldPassword, string newPassword);
-        Task<string> GenerateTestTokenAsync(User user, IList<string> roles);
+        Task<bool> ChangeNicknameAsync(string login, string newNickname);
+        Task<bool> ChangeAvatarAsync(string login, IFormFile file);
     }
 }

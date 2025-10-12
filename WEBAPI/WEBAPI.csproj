@@ -26,4 +26,10 @@
     <ProjectReference Include="..\SERVICES\SERVICES.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="wwwroot\avatar\default.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

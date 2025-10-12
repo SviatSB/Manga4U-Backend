@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using SERVICES.Services;
+using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -19,7 +20,7 @@ namespace WEBAPI.Controllers
     {
         private readonly IAccountService _accountService;
 
-        public AccountController(IAccountService accountService, JwtConfig jwtConfig)
+        public AccountController(IAccountService accountService)
         {
             this._accountService = accountService;
         }
@@ -59,7 +60,7 @@ namespace WEBAPI.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (this.Login == null)
+            if (this.ContextLogin == null)
                 return Unauthorized("Invalid token.");
 
             var result = await _accountService.ChangePasswordAsync(this.ContextLogin, dto.OldPassword, dto.NewPassword);
@@ -70,6 +71,43 @@ namespace WEBAPI.Controllers
             return Ok("Password successfully changed.");
         }
 
+        [Authorize]
+        [HttpPatch("change-nickname")]
+        public async Task<IActionResult> ChangeNickname([FromBody] [MinLength(3)] [MaxLength(16)] [Required] string newNickname)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
+            if (this.ContextLogin == null)
+                return Unauthorized("Invalid token.");
+
+            bool result = await _accountService.ChangeNicknameAsync(this.ContextLogin, newNickname);
+
+            if (!result)
+                return BadRequest("Somthing went wrong");
+
+            return Ok("Nickname successfully changed.");
+        }
+
+        [Authorize]
+        [HttpPatch("change-avatar")]
+        public async Task<IActionResult> ChangeAvatar([Required] IFormFile file)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (file.Length == 0)
+                return BadRequest("Empty file.");
+
+            if (this.ContextLogin == null)
+                return Unauthorized("Invalid token.");
+
+            bool result = await _accountService.ChangeAvatarAsync(this.ContextLogin, file);
+
+            if (!result)
+                return BadRequest("Somthing went wrong");
+
+            return Ok("Avatar successfully changed.");
+        }
     }
 }
