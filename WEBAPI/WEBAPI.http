@@ -4,3 +4,56 @@ GET {{WEBAPI_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###
+
+# JWT Token Validation Tests
+
+### Test Token Generation and Validation
+GET {{WEBAPI_HostAddress}}/api/Account/test-token
+Accept: application/json
+
+###
+
+### Get JWT Configuration
+GET {{WEBAPI_HostAddress}}/api/Account/getjwt
+Accept: application/json
+
+###
+
+### Validate Token (replace TOKEN_HERE with actual token)
+POST {{WEBAPI_HostAddress}}/api/Account/validate-token
+Content-Type: application/json
+
+"TOKEN_HERE"
+
+###
+
+### Decode Token (replace TOKEN_HERE with actual token)
+POST {{WEBAPI_HostAddress}}/api/Account/decode-token
+Content-Type: application/json
+
+"TOKEN_HERE"
+
+###
+
+### Register Test User
+POST {{WEBAPI_HostAddress}}/api/Account/register
+Content-Type: application/json
+
+{
+  "login": "testuser",
+  "password": "testpass123",
+  "nickname": "TestUser"
+}
+
+###
+
+### Login Test User
+POST {{WEBAPI_HostAddress}}/api/Account/login
+Content-Type: application/json
+
+{
+  "login": "testuser",
+  "password": "testpass123"
+}
+
+###

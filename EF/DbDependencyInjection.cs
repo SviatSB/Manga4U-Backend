@@ -11,7 +11,7 @@ namespace DATAINFRASTRUCTURE
 {
     public static class DbDependencyInjection
     {
-        public static IServiceCollection DataBaseDI(this IServiceCollection services, string connectionString)
+        public static IServiceCollection AddDataBaseDI(this IServiceCollection services, string connectionString)
         {
             services.AddDbContext<MyDbContext>(options => options.UseSqlite(connectionString));
 

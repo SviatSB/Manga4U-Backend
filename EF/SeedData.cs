@@ -30,7 +30,8 @@ namespace DATAINFRASTRUCTURE
 
                 var result = await userManager.CreateAsync(newOwner, ownerPassword);
                 if (result.Succeeded)
-                    await userManager.AddToRoleAsync(newOwner, "Owner");
+                    await userManager.AddToRolesAsync(newOwner, ["Owner", "Admin", "User"]);
+
             }
         }
     }
