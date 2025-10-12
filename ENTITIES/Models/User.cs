@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
@@ -14,9 +15,12 @@ namespace ENTITIES.Models
         //public string Login { get; set; } = null!; //not null | unique
         //public string PasswordHash { get; set; } = null!; //not null
         //public bool IsAdmin { get; set; } = false; //not null | has default
+
+        [MinLength(3)]
+        [MaxLength(16)]
         public string Nickname { get; set; } = null!;  //not null | has default (login+random number)
         public bool IsMuted { get; set; } = false; //not null | has default
-        public DateTime? MuteExpire { get; set; } = null; //nullable | has default = null
+        public bool IsBanned { get; set; } = false; //not null | has default
         public string AvatarUrl { get; set; } = "avatar/default.png"; //not null | has default
 
 

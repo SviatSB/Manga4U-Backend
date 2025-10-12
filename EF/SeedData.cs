@@ -25,7 +25,7 @@ namespace DATAINFRASTRUCTURE
                 {
                     UserName = ownerLogin,
                     Nickname = ownerLogin,
-                    EmailConfirmed = true
+                    EmailConfirmed = false
                 };
 
                 var result = await userManager.CreateAsync(newOwner, ownerPassword);

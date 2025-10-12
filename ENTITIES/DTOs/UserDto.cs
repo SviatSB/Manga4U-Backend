@@ -10,12 +10,12 @@ namespace ENTITIES.DTOs
     {
         public long Id { get; set; }
         public string Login { get; set; } = null!;
-        public bool IsAdmin { get; set; }
         public string Nickname { get; set; } = null!;
         public bool IsMuted { get; set; }
-        public DateTime? MuteExpire { get; set; }
-        public string AvatarUrl { get; set; } = "avatar/default.png";
-        
+        public bool IsBanned { get; set; }
+        public string AvatarUrl { get; set; } = null!;
+        public IList<string> Roles { get; set; } = new List<string>();
+
         // Note: PasswordHash is excluded for security reasons
     }
 }
