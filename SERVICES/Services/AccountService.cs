@@ -1,4 +1,6 @@
-﻿using DATAINFRASTRUCTURE.Repository;
+﻿using DATAINFRASTRUCTURE;
+using DATAINFRASTRUCTURE.Repository;
+using ENTITIES.DTOs;
 using ENTITIES.DTOs.AccountDTOs;
 using ENTITIES.Interfaces;
 using ENTITIES.Models;
@@ -84,6 +86,17 @@ namespace SERVICES.Services
             await _userRepository.ChangeAvatarAsync(user, file);
 
             return true;
+        }
+
+        public async Task<UserDto?> GetUserDtoAsync(string login)
+        {
+            var user = await _userRepository.FindByNameAsync(login);
+            if (user == null)
+                return null;
+
+            var roles = await _userRepository.GetRolesAsync(user);
+
+            return DtoConvertor.UserToDto(user, roles);
         }
     }
 }

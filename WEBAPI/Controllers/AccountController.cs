@@ -109,5 +109,17 @@ namespace WEBAPI.Controllers
 
             return Ok("Avatar successfully changed.");
         }
+
+        [Authorize]
+        [HttpGet("me")]
+        public async Task<IActionResult> Me()
+        {
+            if (this.ContextLogin == null)
+                return Unauthorized("Invalid token.");
+
+            var result = await _accountService.GetUserDtoAsync(this.ContextLogin);
+
+            return Ok(result);
+        }
     }
 }

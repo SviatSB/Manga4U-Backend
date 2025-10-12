@@ -39,6 +39,8 @@ namespace DATAINFRASTRUCTURE.Repository
 
         public async Task ChangeAvatarAsync(User user, IFormFile file)
         {
+            var oldAvatarPath = user.AvatarUrl;
+
             //TODO перенесити этот путь в конфиг
             var avatarsPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "avatar");
             Directory.CreateDirectory(avatarsPath);
@@ -49,8 +51,10 @@ namespace DATAINFRASTRUCTURE.Repository
             await using (var stream = new FileStream(filePath, FileMode.Create))
                 await file.CopyToAsync(stream);
 
-            user.AvatarUrl = $"/avatars/{fileName}";
+            user.AvatarUrl = $"/avatar/{fileName}";
             await _userManager.UpdateAsync(user);
+
+            File.Delete(oldAvatarPath);
         }
     }
 }
