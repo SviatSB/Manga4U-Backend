@@ -56,15 +56,18 @@ namespace WEBAPI.Controllers
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto dto)
         {
 
-                if (!ModelState.IsValid)
-                    return BadRequest(ModelState);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-                var result = await _accountService.ChangePasswordAsync(dto.Login, dto.OldPassword, dto.NewPassword);
+            if (this.Login == null)
+                return Unauthorized("Invalid token.");
 
-                if (!result.Succeeded)
-                    return BadRequest(result.Errors);
+            var result = await _accountService.ChangePasswordAsync(this.ContextLogin, dto.OldPassword, dto.NewPassword);
 
-                return Ok("Password successfully changed.");
+            if (!result.Succeeded)
+                return BadRequest(result.Errors);
+
+            return Ok("Password successfully changed.");
         }
 
 

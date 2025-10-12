@@ -2,8 +2,8 @@
 
 namespace WEBAPI.Controllers
 {
-    public class MyController : Controller
+    public class MyController : ControllerBase
     {
-
+        protected string? ContextLogin { get => User.Identity?.Name; }
     }
 }

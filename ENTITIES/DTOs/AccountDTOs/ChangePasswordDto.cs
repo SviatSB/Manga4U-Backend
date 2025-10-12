@@ -10,8 +10,6 @@ namespace ENTITIES.DTOs.AccountDTOs
     public class ChangePasswordDto
     {
         [Required]
-        public string Login { get; set; } = null!;
-        [Required]
         public string OldPassword { get; set; } = null!;
         [Required]
         public string NewPassword { get; set; } = null!;
