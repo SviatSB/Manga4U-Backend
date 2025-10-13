@@ -83,9 +83,9 @@ namespace SERVICES.Services
             if (user == null)
                 return false;
 
-            await _userRepository.ChangeAvatarAsync(user, file);
+            var res = await _userRepository.ChangeAvatarAsync(user, file);
 
-            return true;
+            return res;
         }
 
         public async Task<UserDto?> GetUserDtoAsync(string login)
@@ -99,32 +99,64 @@ namespace SERVICES.Services
             return DtoConvertor.UserToDto(user, roles);
         }
 
-        public Task<bool> BanAsync(long userId)
+        public async Task<bool> BanAsync(long userId)
+        {
+            var user = await _userRepository.FindByIdAsync(userId);
+
+            if (user is null)
+            {
+                return false;
+            }
+
+            var res = await _userRepository.BanAsync(user);
+            return res;
+        }
+
+        public async Task<bool> UnBanAsync(long userId)
+        {
+            var user = await _userRepository.FindByIdAsync(userId);
+
+            if (user is null)
+            {
+                return false;
+            }
+
+            var res = await _userRepository.UnBanAsync(user);
+            return res;
+        }
+
+        public async Task<bool> MuteAsync(long userId)
+        {
+            var user = await _userRepository.FindByIdAsync(userId);
+
+            if (user is null)
+            {
+                return false;
+            }
+
+            var res = await _userRepository.MuteAsync(user);
+            return res;
+        }
+
+        public async Task<bool> UnMuteAsync(long userId)
+        {
+            var user = await _userRepository.FindByIdAsync(userId);
+
+            if (user is null)
+            {
+                return false;
+            }
+
+            var res = await _userRepository.UnMuteAsync(user);
+            return res;
+        }
+
+        public async Task<bool> PromoteAsync(long userId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<bool> UnBanAsync(long userId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> MuteAsync(long userId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> UnMuteAsync(long userId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> PromoteAsync(long userId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> DemoteAsync(long userId)
+        public async Task<bool> DemoteAsync(long userId)
         {
             throw new NotImplementedException();
         }
