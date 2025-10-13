@@ -95,12 +95,26 @@ namespace DATAINFRASTRUCTURE.Repository
 
         public async Task<bool> PromoteAsync(User user)
         {
-            throw new NotImplementedException();
+            var res = await _userManager.AddToRoleAsync(user, "Admin");
+            return res.Succeeded ? true : false;
         }
 
         public async Task<bool> DemoteAsync(User user)
         {
-            throw new NotImplementedException();
+            var res = await _userManager.RemoveFromRoleAsync(user, "Admin");
+            return res.Succeeded ? true : false;
+        }
+
+        public async Task<bool> IsAdmin(User user)
+        {
+            var res = await _userManager.IsInRoleAsync(user, "Admin");
+            return res;
+        }
+
+        public async Task<bool> IsOwner(User user)
+        {
+            var res = await _userManager.IsInRoleAsync(user, "Owner");
+            return res;
         }
     }
 }
