@@ -99,56 +99,68 @@ namespace SERVICES.Services
             return DtoConvertor.UserToDto(user, roles);
         }
 
-        public async Task<bool> BanAsync(long userId)
+        public async Task<bool> BanAsync(string actorLogin, long targetUserId)
         {
-            var user = await _userRepository.FindByIdAsync(userId);
-
-            if (user is null)
-            {
+            var targetUser = await _userRepository.FindByIdAsync(targetUserId);
+            if (targetUser is null)
                 return false;
-            }
 
-            var res = await _userRepository.BanAsync(user);
-            return res;
+            var actorUser = await _userRepository.FindByNameAsync(actorLogin);
+            if (actorUser is null)
+                return false;
+
+            if (!await IsHigherRole(actorUser, targetUser))
+                return false;
+
+            return await _userRepository.BanAsync(targetUser);
         }
 
-        public async Task<bool> UnBanAsync(long userId)
+        public async Task<bool> UnBanAsync(string actorLogin, long targetUserId)
         {
-            var user = await _userRepository.FindByIdAsync(userId);
-
-            if (user is null)
-            {
+            var targetUser = await _userRepository.FindByIdAsync(targetUserId);
+            if (targetUser is null)
                 return false;
-            }
 
-            var res = await _userRepository.UnBanAsync(user);
-            return res;
+            var actorUser = await _userRepository.FindByNameAsync(actorLogin);
+            if (actorUser is null)
+                return false;
+
+            if (!await IsHigherRole(actorUser, targetUser))
+                return false;
+
+            return await _userRepository.UnBanAsync(targetUser);
         }
 
-        public async Task<bool> MuteAsync(long userId)
+        public async Task<bool> MuteAsync(string actorLogin, long targetUserId)
         {
-            var user = await _userRepository.FindByIdAsync(userId);
-
-            if (user is null)
-            {
+            var targetUser = await _userRepository.FindByIdAsync(targetUserId);
+            if (targetUser is null)
                 return false;
-            }
 
-            var res = await _userRepository.MuteAsync(user);
-            return res;
+            var actorUser = await _userRepository.FindByNameAsync(actorLogin);
+            if (actorUser is null)
+                return false;
+
+            if (!await IsHigherRole(actorUser, targetUser))
+                return false;
+
+            return await _userRepository.MuteAsync(targetUser);
         }
 
-        public async Task<bool> UnMuteAsync(long userId)
+        public async Task<bool> UnMuteAsync(string actorLogin, long targetUserId)
         {
-            var user = await _userRepository.FindByIdAsync(userId);
-
-            if (user is null)
-            {
+            var targetUser = await _userRepository.FindByIdAsync(targetUserId);
+            if (targetUser is null)
                 return false;
-            }
 
-            var res = await _userRepository.UnMuteAsync(user);
-            return res;
+            var actorUser = await _userRepository.FindByNameAsync(actorLogin);
+            if (actorUser is null)
+                return false;
+
+            if (!await IsHigherRole(actorUser, targetUser))
+                return false;
+
+            return await _userRepository.UnMuteAsync(targetUser);
         }
 
         public async Task<bool> PromoteAsync(long userId)
@@ -159,6 +171,17 @@ namespace SERVICES.Services
         public async Task<bool> DemoteAsync(long userId)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<bool> IsHigherRole(User actor, User target)
+        {
+            if (await _userRepository.IsOwner(actor)) return true;
+            if (await _userRepository.IsOwner(target)) return false;
+
+            bool actorIsAdmin = await _userRepository.IsAdmin(actor);
+            bool targetIsAdmin = await _userRepository.IsAdmin(target);
+
+            return actorIsAdmin && !targetIsAdmin;
         }
     }
 }
