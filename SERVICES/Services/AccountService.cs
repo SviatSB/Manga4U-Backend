@@ -98,5 +98,35 @@ namespace SERVICES.Services
 
             return DtoConvertor.UserToDto(user, roles);
         }
+
+        public Task<bool> BanAsync(long userId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> UnBanAsync(long userId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> MuteAsync(long userId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> UnMuteAsync(long userId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> PromoteAsync(long userId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> DemoteAsync(long userId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

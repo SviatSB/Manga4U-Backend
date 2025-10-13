@@ -19,5 +19,14 @@ namespace ENTITIES.Interfaces
         Task<bool> ChangeNicknameAsync(string login, string newNickname);
         Task<bool> ChangeAvatarAsync(string login, IFormFile file);
         Task<UserDto?> GetUserDtoAsync(string login);
+
+        Task<bool> BanAsync(long userId);
+        Task<bool> UnBanAsync(long userId);
+
+        Task<bool> MuteAsync(long userId);
+        Task<bool> UnMuteAsync(long userId);
+
+        Task<bool> PromoteAsync(long userId);
+        Task<bool> DemoteAsync(long userId);
     }
 }
