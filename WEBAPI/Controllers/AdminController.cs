@@ -64,34 +64,22 @@ namespace WEBAPI.Controllers
         [HttpPost("user/{userId}/promote")]
         public async Task<IActionResult> Promote([FromRoute] long userId)
         {
-            var res = await _accountService.PromoteAsync(userId);
+            if (this.ContextLogin is null)
+                return Unauthorized("Invalid token.");
 
-            if (res)
-            {
-                return Ok("User has been promoted.");
-            }
-            else
-            {
-                return BadRequest("Something went wrong");
-            }
+            var res = await _accountService.PromoteAsync(this.ContextLogin, userId);
+            return res ? Ok("User has been promoted.") : BadRequest("Something went wrong");
         }
 
         [Authorize(Roles = "Owner")]
         [HttpPost("user/{userId}/demote")]
         public async Task<IActionResult> Demote([FromRoute] long userId)
         {
-            var res = await _accountService.DemoteAsync(userId);
+            if (this.ContextLogin is null)
+                return Unauthorized("Invalid token.");
 
-            if (res)
-            {
-                return Ok("User has been demoted.");
-            }
-            else
-            {
-                return BadRequest("Something went wrong");
-            }
+            var res = await _accountService.DemoteAsync(this.ContextLogin, userId);
+            return res ? Ok("User has been demoted.") : BadRequest("Something went wrong");
         }
-
-
     }
 }

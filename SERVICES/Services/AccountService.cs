@@ -23,7 +23,7 @@ namespace SERVICES.Services
 
         public async Task<IdentityResult> ChangePasswordAsync(string login, string oldPassword, string newPassword)
         {
-            var user = await _userRepository.FindByNameAsync(login);
+            var user = await _userRepository.FindAsync(login);
             if (user == null)
                 return IdentityResult.Failed(new IdentityError { Description = "user not exists" });
 
@@ -32,7 +32,7 @@ namespace SERVICES.Services
 
         public async Task<string?> LoginAsync(string login, string password)
         {
-            var user = await _userRepository.FindByNameAsync(login);
+            var user = await _userRepository.FindAsync(login);
             if (user == null)
                 return null;
 
@@ -47,7 +47,7 @@ namespace SERVICES.Services
         public async Task<IdentityResult> RegisterAsync(string login, string password, string? nickname)
         {
 
-            var existing = await _userRepository.FindByNameAsync(login);
+            var existing = await _userRepository.FindAsync(login);
             if (existing != null)
                 return IdentityResult.Failed(new IdentityError { Description = "such login already exists" });
 
@@ -68,7 +68,7 @@ namespace SERVICES.Services
 
         public async Task<bool> ChangeNicknameAsync(string login, string newNickname)
         {
-            var user = await _userRepository.FindByNameAsync(login);
+            var user = await _userRepository.FindAsync(login);
             if (user == null)
                 return false;
 
@@ -79,7 +79,7 @@ namespace SERVICES.Services
 
         public async Task<bool> ChangeAvatarAsync(string login, IFormFile file)
         {
-            var user = await _userRepository.FindByNameAsync(login);
+            var user = await _userRepository.FindAsync(login);
             if (user == null)
                 return false;
 
@@ -90,7 +90,7 @@ namespace SERVICES.Services
 
         public async Task<UserDto?> GetUserDtoAsync(string login)
         {
-            var user = await _userRepository.FindByNameAsync(login);
+            var user = await _userRepository.FindAsync(login);
             if (user == null)
                 return null;
 
@@ -101,13 +101,10 @@ namespace SERVICES.Services
 
         public async Task<bool> BanAsync(string actorLogin, long targetUserId)
         {
-            var targetUser = await _userRepository.FindByIdAsync(targetUserId);
-            if (targetUser is null)
+            var pair = await GetActorAndTargetOrDefault(actorLogin, targetUserId);
+            if (pair is null)
                 return false;
-
-            var actorUser = await _userRepository.FindByNameAsync(actorLogin);
-            if (actorUser is null)
-                return false;
+            var (actorUser, targetUser) = pair.Value;
 
             if (!await IsHigherRole(actorUser, targetUser))
                 return false;
@@ -117,13 +114,10 @@ namespace SERVICES.Services
 
         public async Task<bool> UnBanAsync(string actorLogin, long targetUserId)
         {
-            var targetUser = await _userRepository.FindByIdAsync(targetUserId);
-            if (targetUser is null)
+            var pair = await GetActorAndTargetOrDefault(actorLogin, targetUserId);
+            if (pair is null)
                 return false;
-
-            var actorUser = await _userRepository.FindByNameAsync(actorLogin);
-            if (actorUser is null)
-                return false;
+            var (actorUser, targetUser) = pair.Value;
 
             if (!await IsHigherRole(actorUser, targetUser))
                 return false;
@@ -133,13 +127,10 @@ namespace SERVICES.Services
 
         public async Task<bool> MuteAsync(string actorLogin, long targetUserId)
         {
-            var targetUser = await _userRepository.FindByIdAsync(targetUserId);
-            if (targetUser is null)
+            var pair = await GetActorAndTargetOrDefault(actorLogin, targetUserId);
+            if (pair is null)
                 return false;
-
-            var actorUser = await _userRepository.FindByNameAsync(actorLogin);
-            if (actorUser is null)
-                return false;
+            var (actorUser, targetUser) = pair.Value;
 
             if (!await IsHigherRole(actorUser, targetUser))
                 return false;
@@ -149,13 +140,10 @@ namespace SERVICES.Services
 
         public async Task<bool> UnMuteAsync(string actorLogin, long targetUserId)
         {
-            var targetUser = await _userRepository.FindByIdAsync(targetUserId);
-            if (targetUser is null)
+            var pair = await GetActorAndTargetOrDefault(actorLogin, targetUserId);
+            if (pair is null)
                 return false;
-
-            var actorUser = await _userRepository.FindByNameAsync(actorLogin);
-            if (actorUser is null)
-                return false;
+            var (actorUser, targetUser) = pair.Value;
 
             if (!await IsHigherRole(actorUser, targetUser))
                 return false;
@@ -163,14 +151,31 @@ namespace SERVICES.Services
             return await _userRepository.UnMuteAsync(targetUser);
         }
 
-        public async Task<bool> PromoteAsync(long userId)
+        public async Task<bool> PromoteAsync(string actorLogin, long targetUserId)
         {
-            throw new NotImplementedException();
+            var pair = await GetActorAndTargetOrDefault(actorLogin, targetUserId);
+            if (pair is null)
+                return false;
+            var (actorUser, targetUser) = pair.Value;
+
+            if (await _userRepository.IsOwner(actorUser))
+                return await _userRepository.DemoteAsync(targetUser);
+
+            return false;
         }
 
-        public async Task<bool> DemoteAsync(long userId)
+        public async Task<bool> DemoteAsync(string actorLogin, long targetUserId)
         {
-            throw new NotImplementedException();
+            var pair = await GetActorAndTargetOrDefault(actorLogin, targetUserId);
+            if (pair is null)
+                return false;
+            var (actorUser, targetUser) = pair.Value;
+
+            if (await _userRepository.IsOwner(actorUser))
+                return await _userRepository.DemoteAsync(targetUser);
+
+            return false;
+
         }
 
         public async Task<bool> IsHigherRole(User actor, User target)
@@ -182,6 +187,19 @@ namespace SERVICES.Services
             bool targetIsAdmin = await _userRepository.IsAdmin(target);
 
             return actorIsAdmin && !targetIsAdmin;
+        }
+
+        private async Task<(User actor, User target)?> GetActorAndTargetOrDefault(string actorLogin, long targetUserId)
+        {
+            var targetUser = await _userRepository.FindAsync(targetUserId);
+            if (targetUser is null)
+                return null;
+
+            var actorUser = await _userRepository.FindAsync(actorLogin);
+            if (actorUser is null)
+                return null;
+
+            return (actorUser, targetUser);
         }
     }
 }

@@ -26,7 +26,7 @@ namespace ENTITIES.Interfaces
         Task<bool> MuteAsync(string actorLogin, long targetUserId);
         Task<bool> UnMuteAsync(string actorLogin, long targetUserId);
 
-        Task<bool> PromoteAsync(long userId);
-        Task<bool> DemoteAsync(long userId);
+        Task<bool> PromoteAsync(string actorLogin, long targetUserId);
+        Task<bool> DemoteAsync(string actorLogin, long targetUserId);
     }
 }

@@ -22,8 +22,8 @@ namespace DATAINFRASTRUCTURE.Repository
             _myDbContext = myDbContext;
         }
 
-        public Task<User?> FindByNameAsync(string login) => _userManager.FindByNameAsync(login);
-        public Task<User?> FindByIdAsync(long userId) => _userManager.FindByIdAsync(userId.ToString());
+        public Task<User?> FindAsync(string login) => _userManager.FindByNameAsync(login);
+        public Task<User?> FindAsync(long userId) => _userManager.FindByIdAsync(userId.ToString());
         public Task<IdentityResult> CreateAsync(User user, string password) => _userManager.CreateAsync(user, password);
         public Task<IdentityResult> AddToRoleAsync(User user, string role) => _userManager.AddToRoleAsync(user, role);
         public Task<bool> CheckPasswordAsync(User user, string password) => _userManager.CheckPasswordAsync(user, password);
