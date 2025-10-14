@@ -99,6 +99,24 @@ namespace SERVICES.Services
             return DtoConvertor.UserToDto(user, roles);
         }
 
+        public async Task<PagedResult<UserDto>> GetUsersAsync(int skip, int take, string? nickname, string? login, IList<string>? roles)
+        {
+            var (users, total) = await _userRepository.QueryUsersAsync(skip, take, nickname, login, roles);
+
+            var items = new List<UserDto>(users.Count);
+            foreach (var u in users)
+            {
+                var uRoles = await _userRepository.GetRolesAsync(u);
+                items.Add(DtoConvertor.UserToDto(u, uRoles));
+            }
+
+            return new PagedResult<UserDto>
+            {
+                TotalCount = total,
+                Items = items
+            };
+        }
+
         public async Task<bool> BanAsync(string actorLogin, long targetUserId)
         {
             var pair = await GetActorAndTargetOrDefault(actorLogin, targetUserId);

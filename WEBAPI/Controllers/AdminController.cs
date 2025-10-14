@@ -1,4 +1,5 @@
-﻿using ENTITIES.Interfaces;
+﻿using ENTITIES.DTOs;
+using ENTITIES.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Metadata;
 using Microsoft.AspNetCore.Mvc;
@@ -80,6 +81,22 @@ namespace WEBAPI.Controllers
 
             var res = await _accountService.DemoteAsync(this.ContextLogin, userId);
             return res ? Ok("User has been demoted.") : BadRequest("Something went wrong");
+        }
+
+        [Authorize(Roles = "Admin,Owner")]
+        [HttpGet("users")]
+        public async Task<ActionResult<PagedResult<UserDto>>> GetUsers(
+        [FromQuery] int skip = 0,
+        [FromQuery] int take = 20,
+        [FromQuery] string? nickname = null,
+        [FromQuery] string? login = null,
+        [FromQuery] List<string>? roles = null)
+        {
+            if (this.ContextLogin is null)
+                return Unauthorized("Invalid token.");
+
+            var result = await _accountService.GetUsersAsync(skip, take, nickname, login, roles);
+            return Ok(result);
         }
     }
 }

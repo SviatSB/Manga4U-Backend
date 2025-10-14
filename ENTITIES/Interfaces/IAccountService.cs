@@ -28,5 +28,7 @@ namespace ENTITIES.Interfaces
 
         Task<bool> PromoteAsync(string actorLogin, long targetUserId);
         Task<bool> DemoteAsync(string actorLogin, long targetUserId);
+
+        Task<PagedResult<UserDto>> GetUsersAsync(int skip, int take, string? nickname, string? login, IList<string>? roles);
     }
 }

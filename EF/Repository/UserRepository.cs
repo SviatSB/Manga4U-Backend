@@ -1,6 +1,7 @@
 ﻿using ENTITIES.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -115,6 +116,55 @@ namespace DATAINFRASTRUCTURE.Repository
         {
             var res = await _userManager.IsInRoleAsync(user, "Owner");
             return res;
+        }
+
+        public async Task<(IReadOnlyList<User> Users, int TotalCount)> QueryUsersAsync(
+            int skip,
+            int take,
+            string? nickname,
+            string? login,
+            IList<string>? roles)
+        {
+            if (skip < 0) skip = 0;
+            if (take <= 0) take = 20;
+            if (take > 200) take = 200;
+
+            IQueryable<User> query = _userManager.Users;
+
+            if (!string.IsNullOrWhiteSpace(nickname))
+            {
+                query = query.Where(u => u.Nickname.Contains(nickname));
+            }
+
+            if (!string.IsNullOrWhiteSpace(login))
+            {
+                query = query.Where(u => u.UserName!.Contains(login));
+            }
+
+            if (roles != null && roles.Count > 0)
+            {
+                var normalizedRoles = roles.Where(r => !string.IsNullOrWhiteSpace(r))
+                                           .Select(r => r.Trim())
+                                           .ToList();
+                if (normalizedRoles.Count > 0)
+                {
+                    var usersInRoles = from ur in _myDbContext.UserRoles
+                                       join r in _myDbContext.Roles on ur.RoleId equals r.Id
+                                       where normalizedRoles.Contains(r.Name!)
+                                       select ur.UserId;
+
+                    query = query.Where(u => usersInRoles.Contains(u.Id));
+                }
+            }
+
+            var total = await query.CountAsync();
+            var users = await query
+                .OrderBy(u => u.UserName)
+                .Skip(skip)
+                .Take(take)
+                .ToListAsync();
+
+            return (users, total);
         }
     }
 }
