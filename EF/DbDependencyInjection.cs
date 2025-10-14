@@ -13,7 +13,16 @@ namespace DATAINFRASTRUCTURE
     {
         public static IServiceCollection AddDataBaseDI(this IServiceCollection services, string connectionString)
         {
-            services.AddDbContext<MyDbContext>(options => options.UseSqlite(connectionString));
+            if (string.IsNullOrEmpty(connectionString) || connectionString == "InMemory")
+            {
+                services.AddDbContext<MyDbContext>(options =>
+                    options.UseInMemoryDatabase("TestDb"));
+            }
+            else
+            {
+                services.AddDbContext<MyDbContext>(options =>
+                    options.UseSqlite(connectionString));
+            }
 
             services.AddScoped<UserRepository>();
             services.AddScoped<MangaRepository>();
