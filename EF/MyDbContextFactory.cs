@@ -8,7 +8,7 @@ namespace DATAINFRASTRUCTURE
         public MyDbContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<MyDbContext>();
-            optionsBuilder.UseSqlite("Data Source=D:\\MyDir\\sqlite\\manga4u.db");
+            optionsBuilder.UseSqlite("Data Source=C:\\Users\\godzi\\Desktop\\Manga4U-Backend\\DB\\app.db");
 
             return new MyDbContext(optionsBuilder.Options);
         }

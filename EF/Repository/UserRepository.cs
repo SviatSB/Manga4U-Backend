@@ -44,28 +44,67 @@ namespace DATAINFRASTRUCTURE.Repository
 
         public async Task<bool> ChangeAvatarAsync(User user, IFormFile file)
         {
-            var oldAvatarPath = user.AvatarUrl;
+            if (file == null || file.Length == 0)
+                return false;
 
-            //TODO перенесити этот путь в конфиг
+            // 📁 Папка для збереження аватарів
             var avatarsPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "avatar");
             Directory.CreateDirectory(avatarsPath);
 
+            // 📸 Формуємо нове ім’я файлу
             var fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
             var filePath = Path.Combine(avatarsPath, fileName);
 
+            // 💾 Зберігаємо новий файл
             await using (var stream = new FileStream(filePath, FileMode.Create))
                 await file.CopyToAsync(stream);
 
-            user.AvatarUrl = $"/avatar/{fileName}";
-            var res = await _userManager.UpdateAsync(user);
-
-            if (res.Succeeded)
+            // 🧹 Видаляємо старий аватар, якщо він не default.png
+            if (!string.IsNullOrEmpty(user.AvatarUrl) &&
+                !user.AvatarUrl.EndsWith("default.png", StringComparison.OrdinalIgnoreCase))
             {
-                File.Delete(oldAvatarPath);
-                return true;
+                var oldPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", user.AvatarUrl.TrimStart('/', '\\'));
+                if (File.Exists(oldPath))
+                    File.Delete(oldPath);
             }
-            return false;
+
+            // 🔗 Оновлюємо шлях у користувача
+            user.AvatarUrl = $"/avatar/{fileName}";
+            var result = await _userManager.UpdateAsync(user);
+
+            return result.Succeeded;
         }
+
+        public async Task<User?> GetByLoginAsync(string login)
+        {
+            if (string.IsNullOrWhiteSpace(login))
+                return null;
+
+            // Якщо логін зберігається у полі UserName або Email — підлаштовуємось:
+            return await _userManager.Users
+                .FirstOrDefaultAsync(u => u.UserName == login || u.Email == login);
+        }
+
+        public async Task<bool> ResetAvatarAsync(User user)
+        {
+            if (user == null)
+                return false;
+
+            // Якщо був кастомний аватар — видаляємо файл
+            if (!string.IsNullOrEmpty(user.AvatarUrl) &&
+                !user.AvatarUrl.EndsWith("default.png", StringComparison.OrdinalIgnoreCase))
+            {
+                var oldPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", user.AvatarUrl.TrimStart('/', '\\'));
+                if (File.Exists(oldPath))
+                    File.Delete(oldPath);
+            }
+
+            // Встановлюємо дефолтний
+            user.AvatarUrl = "/avatar/default.png";
+            var result = await _userManager.UpdateAsync(user);
+            return result.Succeeded;
+        }
+
 
         public async Task<bool> BanAsync(User user)
         {

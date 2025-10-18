@@ -30,5 +30,8 @@ namespace ENTITIES.Interfaces
         Task<bool> DemoteAsync(string actorLogin, long targetUserId);
 
         Task<PagedResult<UserDto>> GetUsersAsync(int skip, int take, string? nickname, string? login, IList<string>? roles);
+
+        // ✅ Новий метод для повернення дефолтного аватара
+        Task<bool> ResetAvatarAsync(string login);
     }
 }

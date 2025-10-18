@@ -88,6 +88,16 @@ namespace SERVICES.Services
             return res;
         }
 
+        public async Task<bool> ResetAvatarAsync(string login)
+        {
+            var user = await _userRepository.GetByLoginAsync(login);
+            if (user == null)
+                return false;
+
+            return await _userRepository.ResetAvatarAsync(user);
+        }
+
+
         public async Task<UserDto?> GetUserDtoAsync(string login)
         {
             var user = await _userRepository.FindAsync(login);

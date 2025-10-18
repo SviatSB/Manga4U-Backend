@@ -1,4 +1,4 @@
-using DATAINFRASTRUCTURE;
+п»їusing DATAINFRASTRUCTURE;
 using ENTITIES;
 using ENTITIES.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -13,32 +13,25 @@ namespace WEBAPI
 {
     public class Program
     {
+        private const string FrontendCorsPolicy = "AllowFrontend";
+
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
             var config = builder.Configuration;
 
-            // Add services to the container.
-
+            // ===== Services =====
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            //==--==--==--==--==
-
-            string conString;
-            if (config.GetValue<bool>("Config:UseInMemoryDB"))
-            {
-                conString = config.GetConnectionString("InMemoryConnection");
-            }
-            else
-            {
-                conString = config.GetConnectionString("DefaultConnection");
-            }
+            // DB
+            var conString = config.GetValue<bool>("Config:UseInMemoryDB")
+                ? config.GetConnectionString("InMemoryConnection")
+                : config.GetConnectionString("DefaultConnection");
             builder.Services.AddDataBaseDI(conString);
 
-            //identity (по хорошему это должно быть в SERVICES методом расширением)
+            // Identity
             builder.Services.AddIdentity<User, IdentityRole<long>>(options =>
             {
                 options.Password.RequiredLength = 8;
@@ -51,28 +44,27 @@ namespace WEBAPI
             .AddEntityFrameworkStores<MyDbContext>()
             .AddDefaultTokenProviders();
 
-            //JWT
-
+            // JWT
             var jwtConfig = new JwtConfig();
-            builder.Configuration.GetSection("Jwt").Bind(jwtConfig);
+            config.GetSection("Jwt").Bind(jwtConfig);
             builder.Services.AddSingleton(jwtConfig);
 
             var key = Encoding.UTF8.GetBytes(jwtConfig.Key);
-            builder.Services.AddAuthentication(options => {
+            builder.Services.AddAuthentication(options =>
+            {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
             })
             .AddJwtBearer(options =>
             {
-                options.TokenValidationParameters = new TokenValidationParameters()
+                options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
                     ValidateAudience = true,
                     ValidateIssuerSigningKey = true,
                     ValidateLifetime = true,
                     RequireExpirationTime = true,
-                    // Allow small clock drift to avoid immediate nbf/iat based failures
                     ClockSkew = TimeSpan.FromMinutes(2),
                     ValidIssuer = jwtConfig.Issuer,
                     ValidAudience = jwtConfig.Audience,
@@ -85,12 +77,12 @@ namespace WEBAPI
                 {
                     OnAuthenticationFailed = ctx =>
                     {
-                        Console.WriteLine($"Token failed: {ctx.Exception}");
+                        Console.WriteLine($"[JWT] Auth failed: {ctx.Exception}");
                         return Task.CompletedTask;
                     },
                     OnChallenge = ctx =>
                     {
-                        Console.WriteLine($"Challenge: {ctx.Error}, {ctx.ErrorDescription}");
+                        Console.WriteLine($"[JWT] Challenge: {ctx.Error}, {ctx.ErrorDescription}");
                         return Task.CompletedTask;
                     }
                 };
@@ -98,25 +90,37 @@ namespace WEBAPI
 
             builder.Services.AddAuthorization();
 
+            // ==================== CORS (Fixed for Frontend) ====================
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy(FrontendCorsPolicy, policy =>
+                {
+                    policy.WithOrigins(
+                        "http://127.0.0.1:5500",
+                        "https://127.0.0.1:5500"
+                    )
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowCredentials(); // рџ”Ґ РћР±РѕРІвЂ™СЏР·РєРѕРІРѕ РґР»СЏ JWT Р·Р°РїРёС‚С–РІ
+                });
+            });
+            // ====================================================================
+
             builder.Services.AddServicesDI();
 
-
-            //==--==--==--==--==
-
+            // ===== App =====
             var app = builder.Build();
 
-            //Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
+                app.UseDeveloperExceptionPage();
             }
 
-            //==--==--==--==--==
-
+            // Seed owner
             var ownerLogin = config["Seed:OwnerLogin"];
             var ownerPassword = config["Seed:OwnerPassword"];
-
             using (var scope = app.Services.CreateScope())
             {
                 SeedData.InitializeAsync(scope.ServiceProvider, ownerLogin, ownerPassword).GetAwaiter().GetResult();
@@ -127,10 +131,11 @@ namespace WEBAPI
 
             app.UseRouting();
 
+            // рџџў CORS РјР°С” Р±СѓС‚Рё РјС–Р¶ UseRouting С‚Р° UseAuthentication
+            app.UseCors(FrontendCorsPolicy);
+
             app.UseAuthentication();
             app.UseAuthorization();
-
-            //==--==--==--==--==
 
             app.MapControllers();
 

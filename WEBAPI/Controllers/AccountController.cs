@@ -111,6 +111,22 @@ namespace WEBAPI.Controllers
         }
 
         [Authorize]
+        [HttpPatch("reset-avatar")]
+        public async Task<IActionResult> ResetAvatar()
+        {
+            if (this.ContextLogin == null)
+                return Unauthorized("Invalid token.");
+
+            bool result = await _accountService.ResetAvatarAsync(this.ContextLogin);
+
+            if (!result)
+                return BadRequest("Не вдалося повернути дефолтний аватар.");
+
+            return Ok("Аватар скинуто до стандартного.");
+        }
+
+
+        [Authorize]
         [HttpGet("me")]
         public async Task<IActionResult> Me()
         {
