@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace SqliteMigrations.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20251028164636_InitSqlite")]
-    partial class InitSqlite
+    [Migration("20251017135550_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -221,9 +221,6 @@ namespace SqliteMigrations.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("AboutMyself")
-                        .HasColumnType("TEXT");
-
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("INTEGER");
 
@@ -247,10 +244,6 @@ namespace SqliteMigrations.Migrations
 
                     b.Property<bool>("IsMuted")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("Language")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("INTEGER");

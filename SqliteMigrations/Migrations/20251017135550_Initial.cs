@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace SqliteMigrations.Migrations
 {
     /// <inheritdoc />
-    public partial class InitSqlite : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -33,8 +33,6 @@ namespace SqliteMigrations.Migrations
                     Id = table.Column<long>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Nickname = table.Column<string>(type: "TEXT", maxLength: 16, nullable: false),
-                    AboutMyself = table.Column<string>(type: "TEXT", nullable: true),
-                    Language = table.Column<string>(type: "TEXT", nullable: false),
                     IsMuted = table.Column<bool>(type: "INTEGER", nullable: false),
                     IsBanned = table.Column<bool>(type: "INTEGER", nullable: false),
                     AvatarUrl = table.Column<string>(type: "TEXT", nullable: false),
