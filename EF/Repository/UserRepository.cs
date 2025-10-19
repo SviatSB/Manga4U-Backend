@@ -42,6 +42,21 @@ namespace DATAINFRASTRUCTURE.Repository
             await _userManager.UpdateAsync(user);
         }
 
+        public async Task ChangeLanguageAsync(User user, string language)
+        {
+            if (string.IsNullOrWhiteSpace(language))
+                return;
+
+            user.Language = language.Trim().ToLowerInvariant();
+            await _userManager.UpdateAsync(user);
+        }
+
+        public async Task ChangeAboutMyselfAsync(User user, string? about)
+        {
+            user.AboutMyself = string.IsNullOrWhiteSpace(about) ? null : about;
+            await _userManager.UpdateAsync(user);
+        }
+
         public async Task<bool> ChangeAvatarAsync(User user, IFormFile file)
         {
             if (file == null || file.Length == 0)

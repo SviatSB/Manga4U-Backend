@@ -97,6 +97,26 @@ namespace SERVICES.Services
             return await _userRepository.ResetAvatarAsync(user);
         }
 
+        public async Task<bool> SetLanguageAsync(string login, string language)
+        {
+            var user = await _userRepository.FindAsync(login);
+            if (user == null)
+                return false;
+
+            await _userRepository.ChangeLanguageAsync(user, language);
+            return true;
+        }
+
+        public async Task<bool> SetAboutMyselfAsync(string login, string? about)
+        {
+            var user = await _userRepository.FindAsync(login);
+            if (user == null)
+                return false;
+
+            await _userRepository.ChangeAboutMyselfAsync(user, about);
+            return true;
+        }
+
 
         public async Task<UserDto?> GetUserDtoAsync(string login)
         {

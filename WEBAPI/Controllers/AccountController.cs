@@ -125,6 +125,31 @@ namespace WEBAPI.Controllers
             return Ok("Аватар скинуто до стандартного.");
         }
 
+        [Authorize]
+        [HttpPatch("language")]
+        public async Task<IActionResult> SetLanguage([FromBody][Required][StringLength(2, MinimumLength = 2)] string language)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (this.ContextLogin == null)
+                return Unauthorized("Invalid token.");
+
+            var ok = await _accountService.SetLanguageAsync(this.ContextLogin, language);
+            return ok ? Ok("Language updated.") : BadRequest("Something went wrong");
+        }
+
+        [Authorize]
+        [HttpPatch("about")]
+        public async Task<IActionResult> SetAboutMyself([FromBody] string? about)
+        {
+            if (this.ContextLogin == null)
+                return Unauthorized("Invalid token.");
+
+            var ok = await _accountService.SetAboutMyselfAsync(this.ContextLogin, about);
+            return ok ? Ok("About updated.") : BadRequest("Something went wrong");
+        }
+
 
         [Authorize]
         [HttpGet("me")]

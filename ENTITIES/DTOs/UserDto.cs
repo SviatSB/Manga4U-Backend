@@ -15,6 +15,8 @@ namespace ENTITIES.DTOs
         public bool IsBanned { get; set; }
         public string AvatarUrl { get; set; } = null!;
         public IList<string> Roles { get; set; } = new List<string>();
+        public string? AboutMyself { get; set; }
+        public string Language { get; set; } = null!;
 
         // Note: PasswordHash is excluded for security reasons
     }

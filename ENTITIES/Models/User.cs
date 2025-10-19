@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.Design;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
@@ -19,6 +20,10 @@ namespace ENTITIES.Models
         [MinLength(3)]
         [MaxLength(16)]
         public string Nickname { get; set; } = null!;  //not null | has default (login+random number)
+        public string? AboutMyself { get; set; } = null; //nullable
+
+        [Length(2,2)]
+        public string Language {  get; set; } = "ua"; //not null | has default
         public bool IsMuted { get; set; } = false; //not null | has default
         public bool IsBanned { get; set; } = false; //not null | has default
         public string AvatarUrl { get; set; } = "avatar/default.png"; //not null | has default

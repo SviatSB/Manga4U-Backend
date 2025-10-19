@@ -33,5 +33,9 @@ namespace ENTITIES.Interfaces
 
         // ✅ Новий метод для повернення дефолтного аватара
         Task<bool> ResetAvatarAsync(string login);
+
+        // set user preferences
+        Task<bool> SetLanguageAsync(string login, string language);
+        Task<bool> SetAboutMyselfAsync(string login, string? about);
     }
 }
