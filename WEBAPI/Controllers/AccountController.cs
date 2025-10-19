@@ -48,7 +48,7 @@ namespace WEBAPI.Controllers
             var token = await _accountService.LoginAsync(dto.Login, dto.Password);
             if (token == null)
                 return Unauthorized("Invalid login or password.");
-
+            Console.WriteLine("✅ TOKEN: " + token);
             return Ok(new { token });
         }
 

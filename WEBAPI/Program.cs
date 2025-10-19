@@ -25,13 +25,13 @@ namespace WEBAPI
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            // DB
+            // ===== Database =====
             var conString = config.GetValue<bool>("Config:UseInMemoryDB")
                 ? config.GetConnectionString("InMemoryConnection")
                 : config.GetConnectionString("DefaultConnection");
             builder.Services.AddDataBaseDI(conString);
 
-            // Identity
+            // ===== Identity =====
             builder.Services.AddIdentity<User, IdentityRole<long>>(options =>
             {
                 options.Password.RequiredLength = 8;
@@ -44,7 +44,7 @@ namespace WEBAPI
             .AddEntityFrameworkStores<MyDbContext>()
             .AddDefaultTokenProviders();
 
-            // JWT
+            // ===== JWT =====
             var jwtConfig = new JwtConfig();
             config.GetSection("Jwt").Bind(jwtConfig);
             builder.Services.AddSingleton(jwtConfig);
@@ -73,6 +73,7 @@ namespace WEBAPI
                     RoleClaimType = ClaimTypes.Role
                 };
 
+                // 🔍 JWT debug logging
                 options.Events = new JwtBearerEvents
                 {
                     OnAuthenticationFailed = ctx =>
@@ -84,31 +85,39 @@ namespace WEBAPI
                     {
                         Console.WriteLine($"[JWT] Challenge: {ctx.Error}, {ctx.ErrorDescription}");
                         return Task.CompletedTask;
+                    },
+                    OnMessageReceived = ctx =>
+                    {
+                        var auth = ctx.Request.Headers["Authorization"].FirstOrDefault();
+                        if (auth != null) Console.WriteLine($"[JWT] Header found: {auth[..Math.Min(auth.Length, 50)]}...");
+                        return Task.CompletedTask;
                     }
                 };
             });
 
             builder.Services.AddAuthorization();
 
-            // ==================== CORS (Fixed for Frontend) ====================
+            // ===== CORS для фронтенду =====
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy(FrontendCorsPolicy, policy =>
                 {
-                    policy.WithOrigins(
-                        "http://127.0.0.1:5500",
-                        "https://127.0.0.1:5500"
-                    )
-                    .AllowAnyHeader()
-                    .AllowAnyMethod()
-                    .AllowCredentials(); // 🔥 Обов’язково для JWT запитів
+                    policy
+                        .WithOrigins(
+                            "http://127.0.0.1:5500",
+                            "https://127.0.0.1:5500",
+                            "http://localhost:5500",
+                            "https://localhost:5500"
+                        )
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials();
                 });
             });
-            // ====================================================================
 
             builder.Services.AddServicesDI();
 
-            // ===== App =====
+            // ===== App pipeline =====
             var app = builder.Build();
 
             if (app.Environment.IsDevelopment())
@@ -118,7 +127,7 @@ namespace WEBAPI
                 app.UseDeveloperExceptionPage();
             }
 
-            // Seed owner
+            // Seed owner user
             var ownerLogin = config["Seed:OwnerLogin"];
             var ownerPassword = config["Seed:OwnerPassword"];
             using (var scope = app.Services.CreateScope())
@@ -126,12 +135,11 @@ namespace WEBAPI
                 SeedData.InitializeAsync(scope.ServiceProvider, ownerLogin, ownerPassword).GetAwaiter().GetResult();
             }
 
-            app.UseStaticFiles();
             app.UseHttpsRedirection();
-
+            app.UseStaticFiles();
             app.UseRouting();
 
-            // 🟢 CORS має бути між UseRouting та UseAuthentication
+            // 🟢 ВАЖЛИВО: CORS перед аутентифікацією
             app.UseCors(FrontendCorsPolicy);
 
             app.UseAuthentication();

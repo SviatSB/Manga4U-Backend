@@ -109,29 +109,34 @@ namespace DATAINFRASTRUCTURE.Repository
         public async Task<bool> BanAsync(User user)
         {
             user.IsBanned = true;
+            user.IsMuted = true; // 🔗 логика: бан включает мьют
             var res = await _userManager.UpdateAsync(user);
-            return res.Succeeded ? true : false;
+            return res.Succeeded;
         }
 
         public async Task<bool> UnBanAsync(User user)
         {
             user.IsBanned = false;
+            user.IsMuted = false; // 🔗 при разбане снимаем мьют
             var res = await _userManager.UpdateAsync(user);
-            return res.Succeeded ? true : false;
+            return res.Succeeded;
         }
+
         public async Task<bool> MuteAsync(User user)
         {
             user.IsMuted = true;
             var res = await _userManager.UpdateAsync(user);
-            return res.Succeeded ? true : false;
+            return res.Succeeded;
         }
 
         public async Task<bool> UnMuteAsync(User user)
         {
-            user.IsBanned = false;
+            user.IsMuted = false; // ✅ исправлено
             var res = await _userManager.UpdateAsync(user);
-            return res.Succeeded ? true : false;
+            return res.Succeeded;
         }
+
+
 
         public async Task<bool> PromoteAsync(User user)
         {
