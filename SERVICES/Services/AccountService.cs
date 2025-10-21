@@ -207,7 +207,7 @@ namespace SERVICES.Services
             var (actorUser, targetUser) = pair.Value;
 
             if (await _userRepository.IsOwner(actorUser))
-                return await _userRepository.DemoteAsync(targetUser);
+                return await _userRepository.PromoteAsync(targetUser);
 
             return false;
         }
