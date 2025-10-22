@@ -12,10 +12,10 @@ namespace SERVICES.Services
 {
     public class AccountService : IAccountService
     {
-        private readonly UserRepository _userRepository;
+        private readonly IUserRepository _userRepository;
         private readonly IJwtTokenGenerator _jwtTokenGenerator;
 
-        public AccountService(UserRepository userRepository, IJwtTokenGenerator jwtTokenGenerator)
+        public AccountService(IUserRepository userRepository, IJwtTokenGenerator jwtTokenGenerator)
         {
             _userRepository = userRepository;
             _jwtTokenGenerator = jwtTokenGenerator;

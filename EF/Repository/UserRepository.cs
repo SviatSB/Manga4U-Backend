@@ -1,4 +1,5 @@
-﻿using ENTITIES.Models;
+﻿using ENTITIES.Interfaces;
+using ENTITIES.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace DATAINFRASTRUCTURE.Repository
 {
-    public class UserRepository
+    public class UserRepository : IUserRepository
     {
         private readonly UserManager<User> _userManager;
         private readonly MyDbContext _myDbContext;

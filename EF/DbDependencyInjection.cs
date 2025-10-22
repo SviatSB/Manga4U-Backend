@@ -1,4 +1,5 @@
 ﻿using DATAINFRASTRUCTURE.Repository;
+using ENTITIES.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -24,9 +25,9 @@ namespace DATAINFRASTRUCTURE
                     options.UseSqlite(connectionString));
             }
 
-            services.AddScoped<UserRepository>();
-            services.AddScoped<MangaRepository>();
-            services.AddScoped<CollectionRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IMangaRepository, MangaRepository>();
+            services.AddScoped<IMangaRepository, CollectionRepository>();
 
             return services;
         }
