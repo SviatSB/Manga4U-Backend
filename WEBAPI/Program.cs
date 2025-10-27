@@ -113,7 +113,7 @@ namespace WEBAPI
                 options.AddPolicy(FrontendCorsPolicy, policy =>
                 {
                     policy
-                        .AllowAnyOrigin()
+                        .SetIsOriginAllowed(_ => true) //TODO избавится от этого
                         .AllowAnyHeader()
                         .AllowAnyMethod()
                         .AllowCredentials();
