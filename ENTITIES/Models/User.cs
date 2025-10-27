@@ -26,7 +26,7 @@ namespace ENTITIES.Models
         public string Language {  get; set; } = "ua"; //not null | has default
         public bool IsMuted { get; set; } = false; //not null | has default
         public bool IsBanned { get; set; } = false; //not null | has default
-        public string AvatarUrl { get; set; } = "avatar/default.png"; //not null | has default
+        public string AvatarUrl { get; set; } = "https://mangastorageaccount.blob.core.windows.net/avatars/default.png"; //not null | has default
 
 
         //FK and References

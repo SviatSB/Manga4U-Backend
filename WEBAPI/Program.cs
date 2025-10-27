@@ -1,13 +1,16 @@
-﻿using DATAINFRASTRUCTURE;
+﻿using Azure.Storage.Blobs;
+using DATAINFRASTRUCTURE;
 using ENTITIES;
+using ENTITIES.Interfaces;
 using ENTITIES.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using SERVICES;
-using System.Text;
 using System.Security.Claims;
+using System.Text;
+using ENTITIES.Options;
 
 namespace WEBAPI
 {
@@ -26,10 +29,17 @@ namespace WEBAPI
             builder.Services.AddSwaggerGen();
 
             // ===== Database =====
-            var conString = config.GetValue<bool>("Config:UseInMemoryDB")
+            var dbConString = config.GetValue<bool>("Config:UseInMemoryDB")
                 ? config.GetConnectionString("InMemoryConnection")
                 : config.GetConnectionString("DefaultConnection");
-            builder.Services.AddDataBaseDI(conString);
+
+            var azureStorageConString = config.GetValue<string>("AzureStorage:ConnectionString");
+
+            builder.Services.AddDataInfrastructure(
+                new DataInfrastructureOptions() {
+                    DbConnectionString = dbConString,
+                    AzureStorageConnectionString = azureStorageConString
+                });
 
             // ===== Identity =====
             builder.Services.AddIdentity<User, IdentityRole<long>>(options =>
@@ -136,7 +146,7 @@ namespace WEBAPI
             }
 
             app.UseHttpsRedirection();
-            app.UseStaticFiles();
+
             app.UseRouting();
 
             // 🟢 ВАЖЛИВО: CORS перед аутентифікацією

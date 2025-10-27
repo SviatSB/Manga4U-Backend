@@ -26,7 +26,7 @@ namespace DATAINFRASTRUCTURE
             }
 
             var optionsBuilder = new DbContextOptionsBuilder<MyDbContext>();
-            optionsBuilder.UseSqlite(connectionString);
+            optionsBuilder.UseSqlServer(connectionString);
 
             return new MyDbContext(optionsBuilder.Options);
         }

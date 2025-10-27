@@ -3,6 +3,7 @@ using ENTITIES.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,11 +18,15 @@ namespace DATAINFRASTRUCTURE.Repository
     {
         private readonly UserManager<User> _userManager;
         private readonly MyDbContext _myDbContext;
+        private readonly IAvatarStorage _avatarStorage;
+        private readonly IConfiguration _config;
 
-        public UserRepository(UserManager<User> userManager, MyDbContext myDbContext)
+        public UserRepository(UserManager<User> userManager, MyDbContext myDbContext, IAvatarStorage avatarStorage, IConfiguration config)
         {
             _userManager = userManager;
             _myDbContext = myDbContext;
+            _avatarStorage = avatarStorage;
+            _config = config;
         }
 
         public Task<User?> FindAsync(string login) => _userManager.FindByNameAsync(login);
@@ -60,35 +65,21 @@ namespace DATAINFRASTRUCTURE.Repository
 
         public async Task<bool> ChangeAvatarAsync(User user, IFormFile file)
         {
+            //TODO: удалять старую
+
             if (file == null || file.Length == 0)
                 return false;
 
-            // 📁 Папка для збереження аватарів
-            var avatarsPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "avatar");
-            Directory.CreateDirectory(avatarsPath);
+            var extension = Path.GetExtension(file.FileName);
+            var fileName = $"{Guid.NewGuid()}-{user.UserName}{extension}";
 
-            // 📸 Формуємо нове ім’я файлу
-            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
-            var filePath = Path.Combine(avatarsPath, fileName);
-
-            // 💾 Зберігаємо новий файл
-            await using (var stream = new FileStream(filePath, FileMode.Create))
-                await file.CopyToAsync(stream);
-
-            // 🧹 Видаляємо старий аватар, якщо він не default.png
-            if (!string.IsNullOrEmpty(user.AvatarUrl) &&
-                !user.AvatarUrl.EndsWith("default.png", StringComparison.OrdinalIgnoreCase))
+            using (var stream = file.OpenReadStream())
             {
-                var oldPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", user.AvatarUrl.TrimStart('/', '\\'));
-                if (File.Exists(oldPath))
-                    File.Delete(oldPath);
+                user.AvatarUrl = await _avatarStorage.UploadAsync(stream, fileName, file.ContentType);
+                var result = await _userManager.UpdateAsync(user);
             }
 
-            // 🔗 Оновлюємо шлях у користувача
-            user.AvatarUrl = $"/avatar/{fileName}";
-            var result = await _userManager.UpdateAsync(user);
-
-            return result.Succeeded;
+            return true;
         }
 
         public async Task<User?> GetByLoginAsync(string login)
@@ -106,17 +97,10 @@ namespace DATAINFRASTRUCTURE.Repository
             if (user == null)
                 return false;
 
-            // Якщо був кастомний аватар — видаляємо файл
-            if (!string.IsNullOrEmpty(user.AvatarUrl) &&
-                !user.AvatarUrl.EndsWith("default.png", StringComparison.OrdinalIgnoreCase))
-            {
-                var oldPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", user.AvatarUrl.TrimStart('/', '\\'));
-                if (File.Exists(oldPath))
-                    File.Delete(oldPath);
-            }
+            //TODO: удалять аватарки
 
             // Встановлюємо дефолтний
-            user.AvatarUrl = "/avatar/default.png";
+            user.AvatarUrl = _config["AzureStorage:DefaultAvatarUrl"];
             var result = await _userManager.UpdateAsync(user);
             return result.Succeeded;
         }
@@ -133,7 +117,7 @@ namespace DATAINFRASTRUCTURE.Repository
         public async Task<bool> UnBanAsync(User user)
         {
             user.IsBanned = false;
-            user.IsMuted = false; // 🔗 при разбане снимаем мьют
+            user.IsMuted = false;
             var res = await _userManager.UpdateAsync(user);
             return res.Succeeded;
         }
@@ -147,12 +131,10 @@ namespace DATAINFRASTRUCTURE.Repository
 
         public async Task<bool> UnMuteAsync(User user)
         {
-            user.IsMuted = false; // ✅ исправлено
+            user.IsMuted = false;
             var res = await _userManager.UpdateAsync(user);
             return res.Succeeded;
         }
-
-
 
         public async Task<bool> PromoteAsync(User user)
         {
