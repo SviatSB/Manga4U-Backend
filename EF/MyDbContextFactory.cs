@@ -19,22 +19,32 @@ namespace DATAINFRASTRUCTURE
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
                 .Build();
 
-            var connectionString = configuration.GetConnectionString("DefaultConnection");
-            if (string.IsNullOrWhiteSpace(connectionString))
-            {
-                throw new InvalidOperationException("ConnectionStrings:DefaultConnection is missing in WEBAPI/appsettings.json");
-            }
+            var provider = configuration["DataBaseConnection:DataBaseProvider"]?.ToLowerInvariant();
+            var connectionString = configuration["DataBaseConnection:ConnectionString"];
 
             var optionsBuilder = new DbContextOptionsBuilder<MyDbContext>();
-            optionsBuilder.UseSqlServer(connectionString, sql =>
+            if (provider == "sqlite")
             {
-                sql.EnableRetryOnFailure(
-                    maxRetryCount: 5,
-                    maxRetryDelay: TimeSpan.FromSeconds(30),
-                    errorNumbersToAdd: new[] { 40613 }
-                );
-                sql.CommandTimeout(60);
-            });
+                optionsBuilder.UseSqlite(connectionString);
+            }
+            else if (provider == "sqlserver")
+            {
+                if (string.IsNullOrWhiteSpace(connectionString))
+                    throw new InvalidOperationException("DataBaseConnection:ConnectionString is missing in WEBAPI/appsettings.json");
+                optionsBuilder.UseSqlServer(connectionString, sql =>
+                {
+                    sql.EnableRetryOnFailure(
+                        maxRetryCount: 5,
+                        maxRetryDelay: TimeSpan.FromSeconds(30),
+                        errorNumbersToAdd: new[] { 40613 }
+                    );
+                    sql.CommandTimeout(60);
+                });
+            }
+            else // default to in-memory for design-time if unspecified
+            {
+                optionsBuilder.UseInMemoryDatabase("DesignTimeDb");
+            }
 
             return new MyDbContext(optionsBuilder.Options);
         }

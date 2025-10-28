@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Sqlite; // needed for UseSqlite extension
 
 namespace DATAINFRASTRUCTURE
 {
@@ -17,15 +18,27 @@ namespace DATAINFRASTRUCTURE
     {
         public static IServiceCollection AddDataInfrastructure(this IServiceCollection services, DataInfrastructureOptions options)
         {
-            if (string.IsNullOrEmpty(options.DbConnectionString) || options.DbConnectionString == "InMemory")
+            // Select provider based on configuration
+            var provider = options.DataBaseProvider?.ToLowerInvariant();
+            if (provider == "inmemory" || string.IsNullOrWhiteSpace(provider))
             {
-                services.AddDbContext<MyDbContext>(options =>
-                    options.UseInMemoryDatabase("TestDb"));
+                services.AddDbContext<MyDbContext>(db => db.UseInMemoryDatabase("TestDb"));
             }
-            else
+            else if (provider == "sqlite")
             {
-                services.AddDbContext<MyDbContext>(o =>
-                    o.UseSqlServer(options.DbConnectionString, sql =>
+                if (string.IsNullOrWhiteSpace(options.DbConnectionString))
+                    throw new ArgumentNullException(nameof(options.DbConnectionString), "SQLite requires a connection string.");
+
+                services.AddDbContext<MyDbContext>(db =>
+                    db.UseSqlite(options.DbConnectionString));
+            }
+            else if (provider == "sqlserver")
+            {
+                if (string.IsNullOrWhiteSpace(options.DbConnectionString))
+                    throw new ArgumentNullException(nameof(options.DbConnectionString), "SQL Server requires a connection string.");
+
+                services.AddDbContext<MyDbContext>(db =>
+                    db.UseSqlServer(options.DbConnectionString, sql =>
                     {
                         // Transient failure resiliency
                         sql.EnableRetryOnFailure(
@@ -36,6 +49,10 @@ namespace DATAINFRASTRUCTURE
                         // Give cold starts a bit more time
                         sql.CommandTimeout(60);
                     }));
+            }
+            else
+            {
+                throw new NotSupportedException($"Unknown database provider: {options.DataBaseProvider}");
             }
 
             // ==Azure==

@@ -26,16 +26,16 @@ namespace WEBAPI.Extensions
         // Database + Azure Storage
         public static IServiceCollection AddDatabaseAndAzureStorage(this IServiceCollection services, IConfiguration config)
         {
-            var dbConString = config.GetValue<bool>("Config:UseInMemoryDB")
-            ? config.GetConnectionString("InMemoryConnection")
-            : config.GetConnectionString("DefaultConnection");
+            var provider = config.GetValue<string>("DataBaseConnection:DataBaseProvider");
+            var connectionString = config.GetValue<string>("DataBaseConnection:ConnectionString");
 
             var azureStorageConString = config.GetValue<string>("AzureStorage:ConnectionString");
 
             services.AddDataInfrastructure(
             new DataInfrastructureOptions
             {
-                DbConnectionString = dbConString,
+                DataBaseProvider = provider,
+                DbConnectionString = connectionString,
                 AzureStorageConnectionString = azureStorageConString
             });
 

@@ -9,6 +9,7 @@ namespace ENTITIES.Options
 {
     public class DataInfrastructureOptions
     {
+        public string? DataBaseProvider { get; set; }
         public string? DbConnectionString { get; set; }
         public string? AzureStorageConnectionString { get; set; }
     }
