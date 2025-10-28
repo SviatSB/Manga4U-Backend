@@ -228,6 +228,9 @@ namespace SERVICES.Services
 
         public async Task<bool> IsHigherRole(User actor, User target)
         {
+            // prevent self-moderation (ban/mute etc.)
+            if (actor.Id == target.Id) return false;
+
             if (await _userRepository.IsOwner(actor)) return true;
             if (await _userRepository.IsOwner(target)) return false;
 
