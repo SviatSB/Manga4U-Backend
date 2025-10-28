@@ -25,7 +25,17 @@ namespace DATAINFRASTRUCTURE
             else
             {
                 services.AddDbContext<MyDbContext>(o =>
-                    o.UseSqlServer(options.DbConnectionString));
+                    o.UseSqlServer(options.DbConnectionString, sql =>
+                    {
+                        // Transient failure resiliency
+                        sql.EnableRetryOnFailure(
+                            maxRetryCount: 5,
+                            maxRetryDelay: TimeSpan.FromSeconds(30),
+                            errorNumbersToAdd: new[] { 40613 } // Database not available
+                        );
+                        // Give cold starts a bit more time
+                        sql.CommandTimeout(60);
+                    }));
             }
 
             // ==Azure==

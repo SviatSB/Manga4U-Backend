@@ -11,6 +11,7 @@ using SERVICES;
 using System.Security.Claims;
 using System.Text;
 using ENTITIES.Options;
+using Microsoft.EntityFrameworkCore;
 
 namespace WEBAPI
 {
@@ -36,7 +37,8 @@ namespace WEBAPI
             var azureStorageConString = config.GetValue<string>("AzureStorage:ConnectionString");
 
             builder.Services.AddDataInfrastructure(
-                new DataInfrastructureOptions() {
+                new DataInfrastructureOptions()
+                {
                     DbConnectionString = dbConString,
                     AzureStorageConnectionString = azureStorageConString
                 });
@@ -132,12 +134,25 @@ namespace WEBAPI
                 app.UseDeveloperExceptionPage();
             }
 
-            // Seed owner user
+            // Seed owner user with resilient execution and non-fatal on cold start
             var ownerLogin = config["Seed:OwnerLogin"];
             var ownerPassword = config["Seed:OwnerPassword"];
             using (var scope = app.Services.CreateScope())
             {
-                SeedData.InitializeAsync(scope.ServiceProvider, ownerLogin, ownerPassword).GetAwaiter().GetResult();
+                var db = scope.ServiceProvider.GetRequiredService<MyDbContext>();
+                var strategy = db.Database.CreateExecutionStrategy();
+                try
+                {
+                    strategy.ExecuteAsync(async () =>
+                    {
+                        await SeedData.InitializeAsync(scope.ServiceProvider, ownerLogin, ownerPassword);
+                    }).GetAwaiter().GetResult();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"[Seed] Skipped after retries due to transient error: {ex.Message}");
+                    // Do not rethrow to avoid crashing on Azure SQL resume/failover
+                }
             }
 
             app.UseHttpsRedirection();
