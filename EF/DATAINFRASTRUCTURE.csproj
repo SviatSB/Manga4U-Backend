@@ -33,8 +33,4 @@
     <ProjectReference Include="..\ENTITIES\ENTITIES.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="SqliteMigrations\" />
-  </ItemGroup>
-
 </Project>

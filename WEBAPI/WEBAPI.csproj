@@ -17,19 +17,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\avatar\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\EF\DATAINFRASTRUCTURE.csproj" />
     <ProjectReference Include="..\ENTITIES\ENTITIES.csproj" />
     <ProjectReference Include="..\SERVICES\SERVICES.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Update="wwwroot\avatar\default.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <ProjectReference Include="..\SqliteMigrations\SqliteMigrations.csproj" />
+    <ProjectReference Include="..\SqlServerMigrations\SqlServerMigrations.csproj" />
   </ItemGroup>
 
 </Project>

@@ -25,7 +25,11 @@ namespace DATAINFRASTRUCTURE
             var optionsBuilder = new DbContextOptionsBuilder<MyDbContext>();
             if (provider == "sqlite")
             {
-                optionsBuilder.UseSqlite(connectionString);
+                optionsBuilder.UseSqlite(connectionString, b =>
+                {
+                    // Direct migrations into the SqliteMigrations assembly
+                    b.MigrationsAssembly("SqliteMigrations");
+                });
             }
             else if (provider == "sqlserver")
             {
@@ -39,6 +43,8 @@ namespace DATAINFRASTRUCTURE
                         errorNumbersToAdd: new[] { 40613 }
                     );
                     sql.CommandTimeout(60);
+                    // Direct migrations into the SqlServerMigrations assembly
+                    sql.MigrationsAssembly("SqlServerMigrations");
                 });
             }
             else // default to in-memory for design-time if unspecified
