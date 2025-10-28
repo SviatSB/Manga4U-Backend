@@ -12,6 +12,8 @@ using System.Security.Claims;
 using System.Text;
 using ENTITIES.Options;
 using Microsoft.EntityFrameworkCore;
+using WEBAPI.Extensions;
+using WEBAPI.Hosted;
 
 namespace WEBAPI
 {
@@ -25,147 +27,20 @@ namespace WEBAPI
             var config = builder.Configuration;
 
             // ===== Services =====
-            builder.Services.AddControllers();
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services
+                .AddAppControllersAndSwagger()
+                .AddDatabaseAndAzureStorage(config)
+                .AddIdentityAndJwt(config)
+                .AddFrontendCors(FrontendCorsPolicy);
 
-            // ===== Database =====
-            var dbConString = config.GetValue<bool>("Config:UseInMemoryDB")
-                ? config.GetConnectionString("InMemoryConnection")
-                : config.GetConnectionString("DefaultConnection");
-
-            var azureStorageConString = config.GetValue<string>("AzureStorage:ConnectionString");
-
-            builder.Services.AddDataInfrastructure(
-                new DataInfrastructureOptions()
-                {
-                    DbConnectionString = dbConString,
-                    AzureStorageConnectionString = azureStorageConString
-                });
-
-            // ===== Identity =====
-            builder.Services.AddIdentity<User, IdentityRole<long>>(options =>
-            {
-                options.Password.RequiredLength = 8;
-                options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequireUppercase = false;
-                options.Password.RequireLowercase = false;
-                options.Password.RequireDigit = false;
-                options.User.RequireUniqueEmail = false;
-            })
-            .AddEntityFrameworkStores<MyDbContext>()
-            .AddDefaultTokenProviders();
-
-            // ===== JWT =====
-            var jwtConfig = new JwtConfig();
-            config.GetSection("Jwt").Bind(jwtConfig);
-            builder.Services.AddSingleton(jwtConfig);
-
-            var key = Encoding.UTF8.GetBytes(jwtConfig.Key);
-            builder.Services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidateLifetime = true,
-                    RequireExpirationTime = true,
-                    ClockSkew = TimeSpan.FromMinutes(2),
-                    ValidIssuer = jwtConfig.Issuer,
-                    ValidAudience = jwtConfig.Audience,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
-                    NameClaimType = ClaimTypes.Name,
-                    RoleClaimType = ClaimTypes.Role
-                };
-
-                // 🔍 JWT debug logging
-                options.Events = new JwtBearerEvents
-                {
-                    OnAuthenticationFailed = ctx =>
-                    {
-                        Console.WriteLine($"[JWT] Auth failed: {ctx.Exception}");
-                        return Task.CompletedTask;
-                    },
-                    OnChallenge = ctx =>
-                    {
-                        Console.WriteLine($"[JWT] Challenge: {ctx.Error}, {ctx.ErrorDescription}");
-                        return Task.CompletedTask;
-                    },
-                    OnMessageReceived = ctx =>
-                    {
-                        var auth = ctx.Request.Headers["Authorization"].FirstOrDefault();
-                        if (auth != null) Console.WriteLine($"[JWT] Header found: {auth[..Math.Min(auth.Length, 50)]}...");
-                        return Task.CompletedTask;
-                    }
-                };
-            });
-
-            builder.Services.AddAuthorization();
-
-            // ===== CORS для фронтенду =====
-            builder.Services.AddCors(options =>
-            {
-                options.AddPolicy(FrontendCorsPolicy, policy =>
-                {
-                    policy
-                        .SetIsOriginAllowed(_ => true) //TODO избавится от этого
-                        .AllowAnyHeader()
-                        .AllowAnyMethod()
-                        .AllowCredentials();
-                });
-            });
-
-            builder.Services.AddServicesDI();
+            builder.Services.AddMyServices();
+            builder.Services.AddHostedService<DbSeederHostedService>();
 
             // ===== App pipeline =====
             var app = builder.Build();
 
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-                app.UseDeveloperExceptionPage();
-            }
-
-            // Seed owner user with resilient execution and non-fatal on cold start
-            var ownerLogin = config["Seed:OwnerLogin"];
-            var ownerPassword = config["Seed:OwnerPassword"];
-            using (var scope = app.Services.CreateScope())
-            {
-                var db = scope.ServiceProvider.GetRequiredService<MyDbContext>();
-                var strategy = db.Database.CreateExecutionStrategy();
-                try
-                {
-                    strategy.ExecuteAsync(async () =>
-                    {
-                        await SeedData.InitializeAsync(scope.ServiceProvider, ownerLogin, ownerPassword);
-                    }).GetAwaiter().GetResult();
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"[Seed] Skipped after retries due to transient error: {ex.Message}");
-                    // Do not rethrow to avoid crashing on Azure SQL resume/failover
-                }
-            }
-
-            app.UseHttpsRedirection();
-
-            app.UseRouting();
-
-            // 🟢 ВАЖЛИВО: CORS перед аутентифікацією
-            app.UseCors(FrontendCorsPolicy);
-
-            app.UseAuthentication();
-            app.UseAuthorization();
-
-            app.MapControllers();
+            app.UseDeveloperFeatures();
+            app.UseAppRequestPipeline(FrontendCorsPolicy);
 
             app.Run();
         }

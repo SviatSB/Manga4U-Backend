@@ -13,7 +13,7 @@ namespace SERVICES
 {
     public static class ServicesDependencyInjection
     {
-        public static IServiceCollection AddServicesDI(this IServiceCollection services)
+        public static IServiceCollection AddMyServices(this IServiceCollection services)
         {
             services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
             services.AddScoped<IAccountService, AccountService>();
