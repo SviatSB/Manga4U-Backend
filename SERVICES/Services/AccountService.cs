@@ -36,6 +36,10 @@ namespace SERVICES.Services
             if (user == null)
                 return null;
 
+            // Block login for banned users
+            if (user.IsBanned)
+                return null;
+
             var isValid = await _userRepository.CheckPasswordAsync(user, password);
             if (!isValid)
                 return null;
