@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Http;
 
 namespace SERVICES
 {
@@ -17,6 +18,10 @@ namespace SERVICES
         {
             services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
             services.AddScoped<IAccountService, AccountService>();
+            services.AddHttpClient<IMangaDexProxy, MangaDexProxy>("mangadex", c =>
+            {
+                c.BaseAddress = new Uri("https://api.mangadex.org");
+            });
 
             return services;
         }

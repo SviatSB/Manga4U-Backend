@@ -27,10 +27,5 @@ namespace DATAINFRASTRUCTURE.Repository
             await blob.UploadAsync(fileStream, new BlobHttpHeaders { ContentType = contentType});
             return  blob.Uri.ToString();
         }
-
-        public async Task<bool> DeleteAsync(string fileName)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

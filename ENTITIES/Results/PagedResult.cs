@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace ENTITIES.DTOs
+namespace ENTITIES.Results
 {
     public class PagedResult<T>
     {

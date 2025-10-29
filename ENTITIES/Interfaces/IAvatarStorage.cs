@@ -9,6 +9,5 @@ namespace ENTITIES.Interfaces
     public interface IAvatarStorage
     {
         Task<string> UploadAsync(Stream fileStream, string fileName, string contentType);
-        Task<bool> DeleteAsync(string fileName);
     }
 }
