@@ -31,7 +31,8 @@ namespace WEBAPI
                 .AddAppControllersAndSwagger()
                 .AddDatabaseAndAzureStorage(config)
                 .AddIdentityAndJwt(config)
-                .AddFrontendCors(FrontendCorsPolicy);
+                .AddFrontendCors(FrontendCorsPolicy)
+                .AddCache(config);
 
             builder.Services.AddMyServices();
             builder.Services.AddHostedService<DbSeederHostedService>();

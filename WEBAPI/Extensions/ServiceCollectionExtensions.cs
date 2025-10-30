@@ -1,3 +1,4 @@
+using System.Reflection.Metadata.Ecma335;
 using System.Security.Claims;
 using System.Text;
 using DATAINFRASTRUCTURE;
@@ -6,6 +7,7 @@ using ENTITIES.Models;
 using ENTITIES.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.IdentityModel.Tokens;
 
 namespace WEBAPI.Extensions
@@ -124,6 +126,24 @@ namespace WEBAPI.Extensions
                          .AllowCredentials();
                 });
             });
+            return services;
+        }
+
+        public static IServiceCollection AddCache(this IServiceCollection services, IConfiguration config)
+        {
+
+            services.AddMemoryCache();
+            services.AddSingleton(provider =>
+            {
+                var cfg = provider.GetService<IConfiguration>();
+                return new MemoryCacheEntryOptions()
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(cfg.GetValue<int>("ProxyConfig:CacheExpirationTime")),
+                    SlidingExpiration = TimeSpan.FromSeconds(cfg.GetValue<int>("ProxyConfig:CacheSlidingExpirationTime")),
+                    Priority = CacheItemPriority.Normal
+                };
+            });
+
             return services;
         }
     }
