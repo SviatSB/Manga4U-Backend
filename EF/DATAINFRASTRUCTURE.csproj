@@ -31,6 +31,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ENTITIES\ENTITIES.csproj" />
+    <ProjectReference Include="..\SharedConfiguration\SharedConfiguration.csproj" />
   </ItemGroup>
 
 </Project>

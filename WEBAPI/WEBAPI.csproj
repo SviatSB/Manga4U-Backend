@@ -17,11 +17,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EF\DATAINFRASTRUCTURE.csproj" />
-    <ProjectReference Include="..\ENTITIES\ENTITIES.csproj" />
     <ProjectReference Include="..\SERVICES\SERVICES.csproj" />
-    <ProjectReference Include="..\SqliteMigrations\SqliteMigrations.csproj" />
-    <ProjectReference Include="..\SqlServerMigrations\SqlServerMigrations.csproj" />
+    <ProjectReference Include="..\SharedConfiguration\SharedConfiguration.csproj" />
   </ItemGroup>
 
 </Project>

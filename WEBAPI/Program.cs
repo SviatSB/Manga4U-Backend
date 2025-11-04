@@ -26,7 +26,8 @@ namespace WEBAPI
             var builder = WebApplication.CreateBuilder(args);
             var config = builder.Configuration;
 
-            // ===== Services =====
+            #region Building
+
             builder.Services
                 .AddAppControllersAndSwagger()
                 .AddDatabaseAndAzureStorage(config)
@@ -34,16 +35,21 @@ namespace WEBAPI
                 .AddFrontendCors(FrontendCorsPolicy)
                 .AddCache(config);
 
+            #endregion
+
             builder.Services.AddMyServices();
             builder.Services.AddHostedService<DbSeederHostedService>();
 
-            // ===== App pipeline =====
+            #region MiddleWare
+
             var app = builder.Build();
 
             app.UseDeveloperFeatures();
             app.UseAppRequestPipeline(FrontendCorsPolicy);
 
             app.Run();
+
+            #endregion
         }
     }
 }

@@ -8,6 +8,7 @@
 
  <ItemGroup>
  <ProjectReference Include="..\EF\DATAINFRASTRUCTURE.csproj" />
+ <ProjectReference Include="..\SharedConfiguration\SharedConfiguration.csproj" />
  </ItemGroup>
 
  <ItemGroup>
