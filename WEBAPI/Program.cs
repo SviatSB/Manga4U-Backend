@@ -14,6 +14,9 @@ using ENTITIES.Options;
 using Microsoft.EntityFrameworkCore;
 using WEBAPI.Extensions;
 using WEBAPI.Hosted;
+using SharedConfiguration;
+using Microsoft.Identity.Client;
+using SharedConfiguration.Options;
 
 namespace WEBAPI
 {
@@ -24,21 +27,41 @@ namespace WEBAPI
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            var config = builder.Configuration;
+            var services = builder.Services;
 
-            #region Building
+            #region Configuration
 
-            builder.Services
-                .AddAppControllersAndSwagger()
-                .AddDatabaseAndAzureStorage(config)
-                .AddIdentityAndJwt(config)
-                .AddFrontendCors(FrontendCorsPolicy)
-                .AddCache(config);
+            var config = ConfigurationFactory.BuildConfiguration();
+
+            // Register option bindings into DI so IOptions<T> can be used across the app
+            services.AddAppConfiguration(config);
+
+            var azureStorageOptions = config.GetSection("AzureStorageOptions").Get<AppAzureStorageOptions>()!;
+            //var cacheOptions = config.GetSection("CacheOptions").Get<AppCacheOptions>()!;
+            var dataBaseOptions = config.GetSection("DataBaseOptions").Get<AppDataBaseOptions>()!;
+            var identityOptions = config.GetSection("IdentityOptions").Get<AppIdentityOptions>()!;
+            var jwtOptions = config.GetSection("JwtOptions").Get<AppJwtOptions>()!;
+            var proxyOptions = config.GetSection("ProxyOptions").Get<AppProxyOptions>()!;
+            //var seedOptions = config.GetSection("SeedOptions").Get<AppSeedOptions>()!;
 
             #endregion
 
-            builder.Services.AddMyServices();
-            builder.Services.AddHostedService<DbSeederHostedService>();
+            #region Building
+
+            services
+                .AddCache()
+                .AddAppAzureStorage(azureStorageOptions)
+                .AddAppDatabase(dataBaseOptions)
+                .AddRepository()
+                .AddMyServices(proxyOptions)
+                .AddAppIdentity(identityOptions)
+                .AddAppJwt(jwtOptions)
+                .AddFrontendCors(FrontendCorsPolicy)
+                .AddAppControllersAndSwagger();
+
+            services.AddHostedService<DbSeederHostedService>();
+
+            #endregion
 
             #region MiddleWare
 

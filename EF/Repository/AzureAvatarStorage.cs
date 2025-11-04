@@ -1,24 +1,32 @@
-﻿using Azure.Storage.Blobs;
-using Azure.Storage.Blobs.Models;
-using Azure.Storage.Blobs.Specialized;
-using ENTITIES.Interfaces;
-using Microsoft.Extensions.Configuration;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
+using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
+using Azure.Storage.Blobs.Specialized;
+
+using ENTITIES.Interfaces;
+
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+
+using SharedConfiguration.Options;
 
 namespace DATAINFRASTRUCTURE.Repository
 {
     public class AzureAvatarStorage : IAvatarStorage
     {
         private readonly BlobContainerClient _container;
+        private readonly AppAzureStorageOptions _azureStorageOptions;
 
-        public AzureAvatarStorage(BlobServiceClient blobServiceClient, IConfiguration config)
+        public AzureAvatarStorage(BlobServiceClient blobServiceClient, IOptions<AppAzureStorageOptions> options)
         {
-            var containerName = config["AzureStorage:ContainerName"];
-            _container = blobServiceClient.GetBlobContainerClient(containerName);
+            _azureStorageOptions = options.Value;
+            _container = blobServiceClient.GetBlobContainerClient(_azureStorageOptions.ContainerName);
         }
 
         public async Task<string> UploadAsync(Stream fileStream, string fileName, string contentType)

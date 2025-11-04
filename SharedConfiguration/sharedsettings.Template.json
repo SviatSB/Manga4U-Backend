@@ -1,0 +1,37 @@
+﻿{
+  "ProxyOptions": {
+    "UserAgent": "CHANGE_ME"
+  },
+  "IdentityOptions": {
+    "PasswordRequiredLength": 8,
+    "PasswordRequireNonAlphanumeric": false,
+    "PasswordRequireUppercase": false,
+    "PasswordRequireLowercase": false,
+    "PasswordRequireDigit": false,
+    "UserRequireUniqueEmail": false
+  },
+  "AzureStorageOptions": {
+    "ConnectionString": "CHANGE_ME",
+    "ContainerName": "CHANGE_ME",
+    "DefaultAvatarUrl": "CHANGE_ME"
+  },
+  "CacheOptions": {
+    "AbsoluteExpirationRelativeToNow": 600,
+    "SlidingExpiration": 120,
+    "Priority": "Normal"
+  },
+  "DataBaseOptions": {
+    "Provider": "CHANGE_ME", //sqlite, sqlserver, inmemory
+    "ConnectionString": "CHANGE_ME"
+  },
+  "JwtOptions": {
+    "Key": "CHANGE_ME",
+    "Issuer": "Manga4UServer",
+    "Audience": "Manga4UClient",
+    "ExpireMinutes": 1000
+  },
+  "SeedOptions": {
+    "OwnerLogin": "CHANGE_ME",
+    "OwnerPassword": "CHANGE_ME"
+  }
+}

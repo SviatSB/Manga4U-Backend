@@ -1,11 +1,4 @@
-﻿using ENTITIES.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ENTITIES.Models
+﻿namespace ENTITIES.Models
 {
     public class Collection
     {
@@ -20,5 +13,12 @@ namespace ENTITIES.Models
         public User User { get; set; } = null!;
 
         public ICollection<Manga> Mangas { get; set; } = new List<Manga>();
+    }
+
+    public enum SystemCollectionType
+    {
+        Favorite,
+        Reading,
+        WantToRead
     }
 }

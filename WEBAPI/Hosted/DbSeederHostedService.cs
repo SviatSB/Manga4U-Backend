@@ -1,25 +1,29 @@
 using DATAINFRASTRUCTURE;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
+
+using SharedConfiguration.Options;
 
 namespace WEBAPI.Hosted
 {
     public class DbSeederHostedService : IHostedService
     {
         private readonly IServiceProvider _serviceProvider;
-        private readonly IConfiguration _config;
-        public DbSeederHostedService(IServiceProvider serviceProvider, IConfiguration config)
+        private readonly AppSeedOptions _seedOptions;
+        public DbSeederHostedService(IServiceProvider serviceProvider, IOptions<AppSeedOptions> seedOptions)
         {
             _serviceProvider = serviceProvider;
-            _config = config;
+            _seedOptions = seedOptions.Value;
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
-            var ownerLogin = _config["Seed:OwnerLogin"];
-            var ownerPassword = _config["Seed:OwnerPassword"];
+            var ownerLogin = _seedOptions.OwnerLogin;
+            var ownerPassword = _seedOptions.OwnerPassword;
             using var scope = _serviceProvider.CreateScope();
             var db = scope.ServiceProvider.GetRequiredService<MyDbContext>();
             var strategy = db.Database.CreateExecutionStrategy();

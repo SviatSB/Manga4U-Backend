@@ -4,12 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ENTITIES.Enums
+namespace SharedConfiguration.Options
 {
-    public enum SystemCollectionType
+    public class AppProxyOptions
     {
-        Favorite,
-        Reading,
-        WantToRead
+        public string UserAgent { get; set; } = null!;
     }
 }

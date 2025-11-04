@@ -12,13 +12,11 @@ namespace SERVICES.Services
     public class MangaDexProxy : IMangaDexProxy
     {
         private readonly HttpClient _httpClient;
-        private readonly IConfiguration _config;
         private readonly IMemoryCache _cache;
         private readonly MemoryCacheEntryOptions _memoryCacheEntryOptions;
-        public MangaDexProxy(HttpClient httpClient, IConfiguration config, IMemoryCache cache, MemoryCacheEntryOptions memoryCacheEntryOptions)
+        public MangaDexProxy(HttpClient httpClient, IMemoryCache cache, MemoryCacheEntryOptions memoryCacheEntryOptions)
         {
             _httpClient = httpClient;
-            _httpClient.DefaultRequestHeaders.Add("User-Agent", config.GetSection("ProxyConfig").GetValue<string>("UserAgent"));
             _cache = cache;
             _memoryCacheEntryOptions = memoryCacheEntryOptions;
         }

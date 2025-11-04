@@ -4,6 +4,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+
+using SharedConfiguration.Options;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,14 +23,14 @@ namespace DATAINFRASTRUCTURE.Repository
         private readonly UserManager<User> _userManager;
         private readonly MyDbContext _myDbContext;
         private readonly IAvatarStorage _avatarStorage;
-        private readonly IConfiguration _config;
+        private readonly AppAzureStorageOptions _azureStorageOptions;
 
-        public UserRepository(UserManager<User> userManager, MyDbContext myDbContext, IAvatarStorage avatarStorage, IConfiguration config)
+        public UserRepository(UserManager<User> userManager, MyDbContext myDbContext, IAvatarStorage avatarStorage, IOptions<AppAzureStorageOptions> azureOptions)
         {
             _userManager = userManager;
             _myDbContext = myDbContext;
             _avatarStorage = avatarStorage;
-            _config = config;
+            _azureStorageOptions = azureOptions.Value;
         }
 
         public Task<User?> FindAsync(string login) => _userManager.FindByNameAsync(login);
@@ -100,7 +104,7 @@ namespace DATAINFRASTRUCTURE.Repository
             //TODO: удалять аватарки
 
             // Встановлюємо дефолтний
-            user.AvatarUrl = _config["AzureStorage:DefaultAvatarUrl"];
+            user.AvatarUrl = _azureStorageOptions.DefaultAvatarUrl;
             var result = await _userManager.UpdateAsync(user);
             return result.Succeeded;
         }

@@ -8,33 +8,36 @@ using ENTITIES.Options;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
+using SharedConfiguration.Options;
+
 namespace DATAINFRASTRUCTURE
 {
     public static class DataInfrastructureDI
     {
-        public static IServiceCollection AddDataInfrastructure(this IServiceCollection services, DataInfrastructureOptions options)
+        public static IServiceCollection AddDataInfrastructure(this IServiceCollection services, AppDataBaseOptions options)
         {
             // Select provider based on configuration
-            var provider = options.DataBaseProvider?.ToLowerInvariant();
-            if (provider == "inmemory" || string.IsNullOrWhiteSpace(provider))
+            var provider = options.Provider;
+
+            if (provider == ProviderType.InMemory)
             {
                 services.AddDbContext<MyDbContext>(db => db.UseInMemoryDatabase("TestDb"));
             }
-            else if (provider == "sqlite")
+            else if (provider == ProviderType.Sqlite)
             {
-                if (string.IsNullOrWhiteSpace(options.DbConnectionString))
-                    throw new ArgumentNullException(nameof(options.DbConnectionString), "SQLite requires a connection string.");
+                if (string.IsNullOrWhiteSpace(options.ConnectionString))
+                    throw new ArgumentNullException(nameof(options.ConnectionString), "SQLite requires a connection string.");
 
                 services.AddDbContext<MyDbContext>(db =>
-                    db.UseSqlite(options.DbConnectionString));
+                    db.UseSqlite(options.ConnectionString));
             }
-            else if (provider == "sqlserver")
+            else if (provider == ProviderType.SqlServer)
             {
-                if (string.IsNullOrWhiteSpace(options.DbConnectionString))
-                    throw new ArgumentNullException(nameof(options.DbConnectionString), "SQL Server requires a connection string.");
+                if (string.IsNullOrWhiteSpace(options.ConnectionString))
+                    throw new ArgumentNullException(nameof(options.ConnectionString), "SQL Server requires a connection string.");
 
                 services.AddDbContext<MyDbContext>(db =>
-                    db.UseSqlServer(options.DbConnectionString, sql =>
+                    db.UseSqlServer(options.ConnectionString, sql =>
                     {
                         // Transient failure resiliency
                         sql.EnableRetryOnFailure(
@@ -48,24 +51,8 @@ namespace DATAINFRASTRUCTURE
             }
             else
             {
-                throw new NotSupportedException($"Unknown database provider: {options.DataBaseProvider}");
+                throw new NotSupportedException($"Unknown database provider: {options.Provider}");
             }
-
-            // ==Azure==
-            if (string.IsNullOrEmpty(options.AzureStorageConnectionString))
-                throw new ArgumentNullException(nameof(options.AzureStorageConnectionString));
-
-            services.AddSingleton(provider =>
-            {
-                return new BlobServiceClient(options.AzureStorageConnectionString);
-            });
-            services.AddScoped<IAvatarStorage, AzureAvatarStorage>();
-            // =========
-
-
-            services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IMangaRepository, MangaRepository>();
-            services.AddScoped<IMangaRepository, CollectionRepository>();
 
             return services;
         }
