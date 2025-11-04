@@ -16,10 +16,14 @@ namespace SharedConfiguration
         public static IServiceCollection AddAppConfiguration(this IServiceCollection services, IConfiguration config)
         {
             // Bind all options used via IOptions<T>
-            services.Configure<AppJwtOptions>(config.GetSection("JwtOptions"));
-            services.Configure<AppAzureStorageOptions>(config.GetSection("AzureStorageOptions"));
-            services.Configure<AppSeedOptions>(config.GetSection("SeedOptions"));
-            services.Configure<AppCacheOptions>(config.GetSection("CacheOptions"));
+            services
+                .Configure<AppJwtOptions>(config.GetSection("JwtOptions"))
+                .Configure<AppAzureStorageOptions>(config.GetSection("AzureStorageOptions"))
+                .Configure<AppSeedOptions>(config.GetSection("SeedOptions"))
+                .Configure<AppCacheOptions>(config.GetSection("CacheOptions"))
+                .Configure<AppDataBaseOptions>(config.GetSection("DataBaseOptions"))
+                .Configure<AppIdentityOptions>(config.GetSection("IdentityOptions"))
+                .Configure<AppProxyOptions>(config.GetSection("ProxyOptions"));
 
             return services;
         }

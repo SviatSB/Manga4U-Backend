@@ -1,7 +1,7 @@
 ﻿using ENTITIES.Interfaces;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace WEBAPI.Controllers
 {

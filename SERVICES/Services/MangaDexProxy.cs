@@ -4,8 +4,9 @@ using ENTITIES.Results;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
+using System.Net;
 
 namespace SERVICES.Services
 {
@@ -13,12 +14,13 @@ namespace SERVICES.Services
     {
         private readonly HttpClient _httpClient;
         private readonly IMemoryCache _cache;
-        private readonly MemoryCacheEntryOptions _memoryCacheEntryOptions;
-        public MangaDexProxy(HttpClient httpClient, IMemoryCache cache, MemoryCacheEntryOptions memoryCacheEntryOptions)
+        private readonly MemoryCacheEntryOptions _cacheOptions;
+
+        public MangaDexProxy(HttpClient httpClient, IMemoryCache cache, IOptions<MemoryCacheEntryOptions> cacheOptions)
         {
             _httpClient = httpClient;
             _cache = cache;
-            _memoryCacheEntryOptions = memoryCacheEntryOptions;
+            _cacheOptions = cacheOptions.Value;
         }
 
         public async Task<ProxyResult> GetAsync(string path, IQueryCollection query)
@@ -26,45 +28,30 @@ namespace SERVICES.Services
             string uri = BuildUri(path, query);
 
             if (_cache.TryGetValue(uri, out string? cached))
-            {
                 return ProxyResult.Success(cached);
-            }
 
             var response = await _httpClient.GetAsync(uri);
             var result = await response.Content.ReadAsStringAsync();
 
-            _cache.Set(uri, result, _memoryCacheEntryOptions);
+            _cache.Set(uri, result, _cacheOptions);
 
-            try
-            {
-                response.EnsureSuccessStatusCode();
+            if (response.IsSuccessStatusCode)
                 return ProxyResult.Success(result);
 
-            }
-            catch (HttpRequestException ex)
-            {
-                Console.WriteLine(response.ToString());
-                return ProxyResult.Failure($"{ex.Message}\non uri: {uri}");
-            }
+            return ProxyResult.Failure($"{response.StatusCode}: {result}\non uri: {uri}");
         }
 
         private string BuildUri(string path, IQueryCollection query)
         {
             var baseUri = new Uri(_httpClient.BaseAddress!, path);
 
-            string uri;
-            if (query.Count > 0)
-            {
-                uri = QueryHelpers.AddQueryString(
-                    baseUri.ToString(), query.ToDictionary(k => k.Key, v => v.Value.ToString())
-                        .Where(kv => kv.Key != "path"));
-            }
-            else
-            {
-                uri = baseUri.ToString();
-            }
-            ;
-            return uri;
+            if (query.Count == 0)
+                return baseUri.ToString();
+
+            return QueryHelpers.AddQueryString(
+                baseUri.ToString(),
+                query.ToDictionary(k => k.Key, v => v.Value.ToString())
+                     .Where(kv => kv.Key != "path"));
         }
     }
 }
