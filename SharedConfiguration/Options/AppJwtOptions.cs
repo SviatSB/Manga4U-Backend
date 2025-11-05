@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using SharedConfiguration.Interfaces;
+
 namespace SharedConfiguration.Options
 {
-    public class AppJwtOptions
+    public class AppJwtOptions : IAppOptions
     {
         public string Key { get; set; } = null!;
         public string Issuer { get; set; } = null!;

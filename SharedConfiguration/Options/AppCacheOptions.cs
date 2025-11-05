@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 
 using Microsoft.Extensions.Caching.Memory;
 
+using SharedConfiguration.Interfaces;
+
 namespace SharedConfiguration.Options
 {
-    public class AppCacheOptions
+    public class AppCacheOptions : IAppOptions
     {
         public int AbsoluteExpirationRelativeToNow { get; set; }
         public int SlidingExpiration { get; set; }

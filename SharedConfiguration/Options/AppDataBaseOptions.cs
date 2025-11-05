@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using SharedConfiguration.Interfaces;
+
 namespace SharedConfiguration.Options
 {
-    public class AppDataBaseOptions
+    public class AppDataBaseOptions : IAppOptions
     {
         public string ConnectionString { get; set; } = null!;
         public ProviderType Provider { get; set; } = ProviderType.Sqlite;

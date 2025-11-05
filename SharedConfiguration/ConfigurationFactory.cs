@@ -15,11 +15,13 @@ namespace SharedConfiguration
             var assemblyLocation = Path.GetDirectoryName(typeof(ConfigurationFactory).Assembly.Location)!;
             basePath ??= assemblyLocation;
 
-            return new ConfigurationBuilder()
+            var config = new ConfigurationBuilder()
                 .SetBasePath(basePath)
                 .AddJsonFile("sharedsettings.json", optional: true)
                 .AddEnvironmentVariables()
                 .Build();
+
+            return new AppConfiguration(config);
         }
     }
 }

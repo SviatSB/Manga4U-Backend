@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using SharedConfiguration.Interfaces;
+
 namespace SharedConfiguration.Options
 {
-    public class AppIdentityOptions
+    public class AppIdentityOptions : IAppOptions
     {
         public int PasswordRequiredLength { get; set; } = 8;
         public bool PasswordRequireNonAlphanumeric { get; set; } = false;
