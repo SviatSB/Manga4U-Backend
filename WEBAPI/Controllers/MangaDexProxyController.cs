@@ -15,12 +15,12 @@ namespace WEBAPI.Controllers
             _proxy = proxy;
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpGet]
         public async Task<IActionResult> Index([FromQuery] string path)
         {
-            if (this.ContextLogin is null)
-                return Unauthorized("Invalid token.");
+            //if (this.ContextLogin is null)
+            //    return Unauthorized("Invalid token.");
 
             if (string.IsNullOrEmpty(path))
                 return BadRequest("Path is required.");
