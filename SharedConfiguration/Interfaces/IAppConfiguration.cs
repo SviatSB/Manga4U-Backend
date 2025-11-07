@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SharedConfiguration.Interfaces
+﻿namespace SharedConfiguration.Interfaces
 {
     public interface IAppConfiguration
     {

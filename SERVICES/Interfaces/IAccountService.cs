@@ -1,16 +1,10 @@
-﻿using ENTITIES.DTOs;
-using ENTITIES.DTOs.AccountDTOs;
-using ENTITIES.Models;
-using ENTITIES.Results;
+﻿using Domain.DTOs;
+using Domain.Results;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace ENTITIES.Interfaces
+namespace Services.Interfaces
 {
     public interface IAccountService
     {

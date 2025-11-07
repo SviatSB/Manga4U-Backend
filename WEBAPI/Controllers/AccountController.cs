@@ -1,18 +1,13 @@
-﻿using ENTITIES;
-using ENTITIES.DTOs.AccountDTOs;
-using ENTITIES.Interfaces;
-using ENTITIES.Models;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using SERVICES.Services;
-using System.ComponentModel.DataAnnotations;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace WEBAPI.Controllers
+using Domain.DTOs.AccountDTOs;
+
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+using Services.Interfaces;
+
+namespace WebApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -73,7 +68,7 @@ namespace WEBAPI.Controllers
 
         [Authorize]
         [HttpPatch("change-nickname")]
-        public async Task<IActionResult> ChangeNickname([FromBody] [MinLength(3)] [MaxLength(16)] [Required] string newNickname)
+        public async Task<IActionResult> ChangeNickname([FromBody][MinLength(3)][MaxLength(16)][Required] string newNickname)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

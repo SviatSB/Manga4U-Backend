@@ -1,14 +1,11 @@
-using DATAINFRASTRUCTURE;
+using DataInfrastructure;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
 using SharedConfiguration.Options;
 
-namespace WEBAPI.Hosted
+namespace WebApi.Hosted
 {
     public class DbSeederHostedService : IHostedService
     {

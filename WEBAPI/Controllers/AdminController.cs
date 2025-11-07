@@ -1,12 +1,12 @@
-﻿using ENTITIES.DTOs;
-using ENTITIES.Interfaces;
-using ENTITIES.Results;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.Metadata;
-using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
+﻿using Domain.DTOs;
+using Domain.Results;
 
-namespace WEBAPI.Controllers
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+using Services.Interfaces;
+
+namespace WebApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

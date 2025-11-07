@@ -1,15 +1,17 @@
-﻿using DATAINFRASTRUCTURE;
-using DATAINFRASTRUCTURE.Repository;
-using ENTITIES.DTOs;
-using ENTITIES.DTOs.AccountDTOs;
-using ENTITIES.Interfaces;
-using ENTITIES.Models;
-using ENTITIES.Results;
+﻿using DataInfrastructure;
+using DataInfrastructure.Interfaces;
+
+using Domain.DTOs;
+using Domain.Models;
+using Domain.Results;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
 
-namespace SERVICES.Services
+using Services.Interfaces;
+
+
+namespace Services.Services
 {
     public class AccountService : IAccountService
     {
@@ -59,7 +61,7 @@ namespace SERVICES.Services
             if (string.IsNullOrWhiteSpace(nickname)) nickname = login;
 
             var user = new User
-            { 
+            {
                 UserName = login,
                 Nickname = nickname
             };

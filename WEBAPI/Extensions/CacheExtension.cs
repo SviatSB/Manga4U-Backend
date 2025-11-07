@@ -3,7 +3,7 @@ using Microsoft.Extensions.Options;
 
 using SharedConfiguration.Options;
 
-namespace WEBAPI.Extensions
+namespace WebApi.Extensions
 {
     public static class CacheExtension
     {

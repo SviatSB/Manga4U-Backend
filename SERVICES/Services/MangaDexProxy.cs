@@ -1,14 +1,13 @@
-﻿using ENTITIES.Interfaces;
-using ENTITIES.Results;
+﻿using Domain.Results;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 
-using System.Net;
+using Services.Interfaces;
 
-namespace SERVICES.Services
+namespace Services.Services
 {
     public class MangaDexProxy : IMangaDexProxy
     {

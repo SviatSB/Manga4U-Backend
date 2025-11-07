@@ -1,26 +1,13 @@
-using System.Security.Claims;
-using System.Text;
+using DataInfrastructure;
 
-using Azure.Storage.Blobs;
+using Domain.Models;
 
-using DATAINFRASTRUCTURE;
-using DATAINFRASTRUCTURE.Extensions;
-using DATAINFRASTRUCTURE.Repository;
-
-using ENTITIES.Interfaces;
-using ENTITIES.Models;
-
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-
-using SERVICES.Services;
 
 using SharedConfiguration.Options;
 
-namespace WEBAPI.Extensions.Temp
+namespace WebApi.Extensions.Temp
 {
     public static class ServiceCollectionExtensions
     {
@@ -57,19 +44,19 @@ namespace WEBAPI.Extensions.Temp
         }
 
         public static IServiceCollection AddFrontendCors(this IServiceCollection services, string policyName)
+        {
+            services.AddCors(options =>
             {
-                services.AddCors(options =>
+                options.AddPolicy(policyName, policy =>
                 {
-                    options.AddPolicy(policyName, policy =>
-                    {
-                        policy
-                             .SetIsOriginAllowed(_ => true) //TODO избавиться от этого
-                             .AllowAnyHeader()
-                             .AllowAnyMethod()
-                             .AllowCredentials();
-                    });
+                    policy
+                         .SetIsOriginAllowed(_ => true) //TODO избавиться от этого
+                         .AllowAnyHeader()
+                         .AllowAnyMethod()
+                         .AllowCredentials();
                 });
-                return services;
-            }
+            });
+            return services;
         }
+    }
 }

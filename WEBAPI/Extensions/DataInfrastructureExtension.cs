@@ -1,6 +1,6 @@
-﻿using DATAINFRASTRUCTURE.Extensions;
+﻿using DataInfrastructure.Extensions;
 
-namespace WEBAPI.Extensions
+namespace WebApi.Extensions
 {
     public static class DataInfrastructureExtension
     {

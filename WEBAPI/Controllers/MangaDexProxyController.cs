@@ -1,9 +1,9 @@
-﻿using ENTITIES.Interfaces;
-
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace WEBAPI.Controllers
+using Services.Interfaces;
+
+namespace WebApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

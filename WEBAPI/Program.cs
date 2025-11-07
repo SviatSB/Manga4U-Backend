@@ -1,13 +1,12 @@
-﻿using SERVICES.Extensions;
+﻿using Services.Extensions;
 
 using SharedConfiguration;
-using SharedConfiguration.Options;
 
-using WEBAPI.Extensions;
-using WEBAPI.Extensions.Temp;
-using WEBAPI.Hosted;
+using WebApi.Extensions;
+using WebApi.Extensions.Temp;
+using WebApi.Hosted;
 
-namespace WEBAPI
+namespace WebApi
 {
     public class Program
     {

@@ -2,15 +2,14 @@
 using System.Text;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
-using SERVICES.Extensions;
+using Services.Extensions;
 
 using SharedConfiguration.Options;
 
-namespace WEBAPI.Extensions
+namespace WebApi.Extensions
 {
     public static class JwtExtension
     {

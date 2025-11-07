@@ -1,17 +1,17 @@
-﻿using ENTITIES;
-using ENTITIES.Interfaces;
-using ENTITIES.Models;
+﻿using System.Security.Claims;
+using System.Text;
+
+using Domain.Models;
 
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 
+using Services.Interfaces;
+
 using SharedConfiguration.Options;
 
-using System.Security.Claims;
-using System.Text;
-
-namespace SERVICES.Services
+namespace Services.Services
 {
     public class JwtTokenGenerator : IJwtTokenGenerator
     {
