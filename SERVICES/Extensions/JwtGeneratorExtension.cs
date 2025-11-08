@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
 using Services.Interfaces;
+using Services.Services;
 
 namespace Services.Extensions
 {
@@ -8,7 +9,7 @@ namespace Services.Extensions
     {
         public static IServiceCollection AddAppJwtGenerator(this IServiceCollection services)
         {
-            services.AddScoped<IJwtTokenGenerator, IJwtTokenGenerator>();
+            services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
             return services;
         }
     }
