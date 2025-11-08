@@ -13,7 +13,7 @@
         //FK and References
         public ICollection<History> Histories { get; set; } = new List<History>();
         public ICollection<Review> Reviews { get; set; } = new List<Review>();
-        public ICollection<MangaGenre> MangaGenres { get; set; } = new List<MangaGenre>();
+        public ICollection<Tag> Tags { get; set; } = new List<Tag>();
         public ICollection<Collection> Collections { get; set; } = new List<Collection>();
     }
 }

@@ -3,6 +3,7 @@ using System;
 using DataInfrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace SqliteMigrations.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251108220150_HistoryChanges")]
+    partial class HistoryChanges
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.9");
@@ -100,31 +103,14 @@ namespace SqliteMigrations.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Language")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("LastChapterId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("LastChapterNumber")
+                    b.Property<int>("LastChapter")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("LastChapterTitle")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("MangaExternalId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<int>("LastPage")
+                        .HasColumnType("INTEGER");
 
                     b.Property<long>("MangaId")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("MangaName")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("TEXT");
@@ -188,25 +174,6 @@ namespace SqliteMigrations.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Reviews");
-                });
-
-            modelBuilder.Entity("Domain.Models.Tag", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("TagExternalId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Tags");
                 });
 
             modelBuilder.Entity("Domain.Models.User", b =>
@@ -294,21 +261,6 @@ namespace SqliteMigrations.Migrations
                         .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers", (string)null);
-                });
-
-            modelBuilder.Entity("MangaTag", b =>
-                {
-                    b.Property<long>("MangasId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<long>("TagsId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("MangasId", "TagsId");
-
-                    b.HasIndex("TagsId");
-
-                    b.ToTable("MangaTag");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<long>", b =>
@@ -524,21 +476,6 @@ namespace SqliteMigrations.Migrations
                     b.Navigation("Manga");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("MangaTag", b =>
-                {
-                    b.HasOne("Domain.Models.Manga", null)
-                        .WithMany()
-                        .HasForeignKey("MangasId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Models.Tag", null)
-                        .WithMany()
-                        .HasForeignKey("TagsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<long>", b =>

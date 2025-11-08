@@ -11,8 +11,8 @@
         //FK and References
         public long UserId { get; set; }  // FK User
         public long MangaId { get; set; }  // FK Manga
-        public User User { get; set; }
-        public Manga Manga { get; set; }
+        public User User { get; set; } = null!;
+        public Manga Manga { get; set; } = null!;
 
         //на который отвечают
         public long? RepliedCommentId { get; set; }  // FK Comment (DELETE CASCADE)

@@ -3,6 +3,7 @@ using System;
 using DataInfrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace SqliteMigrations.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251108220606_HistoryChanges2")]
+    partial class HistoryChanges2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.9");
@@ -100,31 +103,14 @@ namespace SqliteMigrations.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Language")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("LastChapterId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("LastChapterNumber")
+                    b.Property<int>("LastChapter")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("LastChapterTitle")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("MangaExternalId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<int>("LastPage")
+                        .HasColumnType("INTEGER");
 
                     b.Property<long>("MangaId")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("MangaName")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("TEXT");
@@ -197,10 +183,6 @@ namespace SqliteMigrations.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("TagExternalId")
                         .IsRequired()
                         .HasColumnType("TEXT");
 

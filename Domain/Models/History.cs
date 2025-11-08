@@ -3,10 +3,14 @@
     public class History
     {
         public long Id { get; set; }
-        public int LastChapter { get; set; } //not null | has default = 0?
-        public int LastPage { get; set; } //not null | has default = 0?
+        public string MangaName { get; set; } = null!;
+        public string LastChapterId { get; set; } = null!;
+        public string Language { get; set; } = null!;
+        public string LastChapterTitle { get; set; } = null!;
+        public int LastChapterNumber { get; set; }
         public DateTime UpdatedAt { get; set; } = DateTime.Now; //not null | has default
 
+        public string MangaExternalId { get; set; } = null!;
 
         //FK and References
         public long UserId { get; set; }  //not null
