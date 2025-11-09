@@ -14,7 +14,7 @@ namespace Services.Services
 {
     public class MangaService(IMangaRepository mangaRepository, IMangaDexService mangaDexService) : IMangaService
     {
-        public async Task AddIfNotExist(string id)
+        public async Task<Manga> AddIfNotExist(string id)
         {
             var manga = await mangaRepository.FindByExternalIdAsync(id);
 
@@ -31,6 +31,8 @@ namespace Services.Services
 
                 await mangaRepository.LinkTagsByExternalIdsAsync(manga, dto.TagIds);
             }
+
+            return manga;
         }
     }
 }

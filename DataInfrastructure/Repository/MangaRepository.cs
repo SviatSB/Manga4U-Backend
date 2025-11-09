@@ -1,7 +1,5 @@
 ﻿using DataInfrastructure.Interfaces;
-
 using Domain.Models;
-
 using Microsoft.EntityFrameworkCore;
 
 namespace DataInfrastructure.Repository
@@ -55,6 +53,18 @@ namespace DataInfrastructure.Repository
             }
 
             await myDbContext.SaveChangesAsync();
+        }
+
+        public async Task<List<Tag>> GetTagsForMangasAsync(IEnumerable<long> mangaIds)
+        {
+            var ids = mangaIds?.ToArray() ?? Array.Empty<long>();
+            if (ids.Length == 0) return new List<Tag>();
+
+            // Select tags through the many-to-many relationship
+            return await myDbContext.Mangas
+                .Where(m => ids.Contains(m.Id))
+                .SelectMany(m => m.Tags)
+                .ToListAsync();
         }
     }
 }

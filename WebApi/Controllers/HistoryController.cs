@@ -15,7 +15,7 @@ namespace WebApi.Controllers
         [Authorize]
         public async Task<IActionResult> GetHistory()
         {
-            var user = GetCurrentUserAsync();
+            var user = await GetCurrentUserAsync();
             return Ok(await historyService.GetAllAsync(user.Id));
         }
 
@@ -23,7 +23,7 @@ namespace WebApi.Controllers
         [Authorize]
         public async Task<IActionResult> UpdateHistory([FromBody] UpdateHistoryDto dto)
         {
-            var user = GetCurrentUserAsync();
+            var user = await GetCurrentUserAsync();
             await historyService.UpdateHistoryAsync(user.Id, dto);
             return Ok();
         }
@@ -32,7 +32,7 @@ namespace WebApi.Controllers
         [Authorize]
         public async Task<IActionResult> Recomendation([FromQuery] int limit = 20)
         {
-            var user = GetCurrentUserAsync();
+            var user = await GetCurrentUserAsync();
             return Ok(await historyService.GetRecomendationAsync(user.Id, limit));
         }
     }

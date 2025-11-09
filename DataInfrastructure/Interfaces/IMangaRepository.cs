@@ -10,5 +10,7 @@ namespace DataInfrastructure.Interfaces
         Task AddAsync(Manga manga);
         // Link existing tags (already stored in DB) to a manga using tag external ids
         Task LinkTagsByExternalIdsAsync(Manga manga, IEnumerable<string> tagExternalIds);
+        // Get tags for mangas
+        Task<List<Tag>> GetTagsForMangasAsync(IEnumerable<long> mangaIds);
     }
 }

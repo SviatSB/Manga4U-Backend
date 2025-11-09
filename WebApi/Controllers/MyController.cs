@@ -13,6 +13,7 @@ namespace WebApi.Controllers
         protected string? ContextLogin { get => User.Identity?.Name; }
         protected async Task<UserDto?> GetCurrentUserAsync()
         {
+            Console.WriteLine("ContextLogin " + ContextLogin);
             return ContextLogin is null ? null : await userService.FindAsync(ContextLogin);
         }
 
