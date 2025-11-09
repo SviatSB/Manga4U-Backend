@@ -34,10 +34,11 @@ namespace WebApi
                 .AddMyServices()
                 .AddAppIdentity()
                 .AddAppJwt()
+                .AddSeeders()
                 .AddFrontendCors(FrontendCorsPolicy)
                 .AddAppControllersAndSwagger();
 
-            services.AddHostedService<DbSeederHostedService>();
+            services.AddHostedService<SeederHostedService>();
 
             #endregion
 

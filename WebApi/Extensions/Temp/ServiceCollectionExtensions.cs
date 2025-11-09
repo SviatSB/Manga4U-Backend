@@ -19,7 +19,7 @@ namespace WebApi.Extensions.Temp
             return services;
         }
 
-
+        //todo перенести в datainfrstructure
         public static IServiceCollection AddAppIdentity(this IServiceCollection services)
         {
             services.AddIdentity<User, IdentityRole<long>>()

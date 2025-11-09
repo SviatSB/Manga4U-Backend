@@ -1,4 +1,7 @@
-﻿using DataInfrastructure.Interfaces;
+﻿
+using DataInfrastructure.Interfaces;
+
+using Domain.Models;
 
 namespace DataInfrastructure.Repository
 {

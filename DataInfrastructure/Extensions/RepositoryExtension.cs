@@ -12,6 +12,8 @@ namespace DataInfrastructure.Extensions
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IMangaRepository, MangaRepository>();
             services.AddScoped<IMangaRepository, CollectionRepository>();
+            services.AddScoped<IHistoryRepository, HistoryRepository>();
+            services.AddScoped<ITagRepository, TagRepository>();
 
             return services;
         }

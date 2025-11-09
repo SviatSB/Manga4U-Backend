@@ -5,24 +5,34 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 
+using Newtonsoft.Json;
+
 using Services.Interfaces;
+using Services.Respones.Tags;
 
 namespace Services.Services
 {
-    public class MangaDexProxy : IMangaDexProxy
+    public class MangaDexService : IMangaDexService
     {
         private readonly HttpClient _httpClient;
         private readonly IMemoryCache _cache;
         private readonly MemoryCacheEntryOptions _cacheOptions;
 
-        public MangaDexProxy(HttpClient httpClient, IMemoryCache cache, IOptions<MemoryCacheEntryOptions> cacheOptions)
+        public MangaDexService(HttpClient httpClient, IMemoryCache cache, IOptions<MemoryCacheEntryOptions> cacheOptions)
         {
             _httpClient = httpClient;
             _cache = cache;
             _cacheOptions = cacheOptions.Value;
         }
 
-        public async Task<ProxyResult> GetAsync(string path, IQueryCollection query)
+        public async Task<TagsListResponse> GetTagsAsync()
+        {
+            var josn = await _httpClient.GetStringAsync("manga/tag");
+            return JsonConvert.DeserializeObject<TagsListResponse>(josn)!;
+
+        }
+
+        public async Task<ProxyResult> ProxyGetAsync(string path, IQueryCollection query)
         {
             string uri = BuildUri(path, query);
 

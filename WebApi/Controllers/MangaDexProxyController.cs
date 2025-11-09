@@ -9,8 +9,8 @@ namespace WebApi.Controllers
     [Route("api/[controller]")]
     public class MangaDexProxyController : MyController
     {
-        private readonly IMangaDexProxy _proxy;
-        public MangaDexProxyController(IMangaDexProxy proxy)
+        private readonly IMangaDexService _proxy;
+        public MangaDexProxyController(IMangaDexService proxy)
         {
             _proxy = proxy;
         }
@@ -25,7 +25,7 @@ namespace WebApi.Controllers
             if (string.IsNullOrEmpty(path))
                 return BadRequest("Path is required.");
 
-            var result = await _proxy.GetAsync(path, Request.Query);
+            var result = await _proxy.ProxyGetAsync(path, Request.Query);
             if (result.IsSucceed)
                 return Content(result.Result!, "application/json");
 

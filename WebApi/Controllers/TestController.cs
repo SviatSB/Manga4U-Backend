@@ -6,14 +6,20 @@ using Services.Interfaces;
 namespace WebApi.Controllers
 {
     [ApiController]
-    public class TestController(IJwtTokenGenerator generator) : Controller
+    public class TestController(IMangaDexService mangaDexService) : Controller
     {
-
-        [Authorize]
-        [HttpPost("api/test1")]
-        public IActionResult Index()
+        [HttpPost("ping")]
+        public IActionResult Ping()
         {
-            return Ok();
+            return Ok("pong");
+        }
+
+        [HttpPost("tagtest")]
+        public async Task<IActionResult> TagTest()
+        {
+            var res = await mangaDexService.GetTagsAsync();
+
+            return Ok(res);
         }
     }
 }

@@ -13,7 +13,8 @@ namespace Services.Extensions
         public static IServiceCollection AddMyServices(this IServiceCollection services)
         {
             services.AddScoped<IAccountService, AccountService>();
-            services.AddHttpClient<IMangaDexProxy, MangaDexProxy>("mangadex", (sp, c) =>
+            services.AddScoped<IHistoryService, HistoryService>();
+            services.AddHttpClient<IMangaDexService, MangaDexService>("mangadex", (sp, c) =>
             {
                 var proxyOptions = sp.GetRequiredService<IOptions<AppProxyOptions>>().Value;
 
