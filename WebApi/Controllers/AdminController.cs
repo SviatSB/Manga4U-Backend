@@ -1,9 +1,9 @@
-﻿using Domain.DTOs;
-using Domain.Results;
+﻿using Domain.Results;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+using Services.DTOs.ModelsDTOs;
 using Services.Interfaces;
 
 namespace WebApi.Controllers

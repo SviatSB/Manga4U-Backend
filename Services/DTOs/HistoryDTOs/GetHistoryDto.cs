@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.DTOs.HistoryDTOs
+namespace Services.DTOs.HistoryDTOs
 {
     public class GetHistoryDto
     {

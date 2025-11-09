@@ -1,13 +1,12 @@
-﻿using DataInfrastructure;
-using DataInfrastructure.Interfaces;
+﻿using DataInfrastructure.Interfaces;
 
-using Domain.DTOs;
 using Domain.Models;
 using Domain.Results;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 
+using Services.DTOs.ModelsDTOs;
 using Services.Interfaces;
 
 

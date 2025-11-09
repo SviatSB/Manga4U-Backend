@@ -1,11 +1,10 @@
-﻿namespace Domain.DTOs
+﻿namespace Services.DTOs.ModelsDTOs
 {
-    public class HistoryDto
+    public class CommentDto
     {
         public long Id { get; set; }
-        public int LastChapter { get; set; }
-        public int LastPage { get; set; }
-        public DateTime UpdatedAt { get; set; }
+        public DateTime CreationTime { get; set; }
+        public string Text { get; set; } = null!;
         public long UserId { get; set; }
         public long MangaId { get; set; }
 

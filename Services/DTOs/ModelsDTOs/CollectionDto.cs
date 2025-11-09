@@ -1,6 +1,6 @@
 ﻿using Domain.Models;
 
-namespace Domain.DTOs
+namespace Services.DTOs.ModelsDTOs
 {
     public class CollectionDto
     {

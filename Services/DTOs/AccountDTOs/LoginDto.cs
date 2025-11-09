@@ -1,19 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Domain.DTOs.AccountDTOs
+namespace Services.DTOs.AccountDTOs
 {
-    public class RegistrationDto
+    public class LoginDto
     {
         [Required]
         public string Login { get; set; } = null!;
 
         [Required]
-        [MinLength(8)]
-
         public string Password { get; set; } = null!;
-
-        [MinLength(3)]
-        [MaxLength(16)]
-        public string? Nickname { get; set; }
     }
 }

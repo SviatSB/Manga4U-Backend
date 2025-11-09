@@ -1,15 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Domain.DTOs
+﻿namespace Services.DTOs.ModelsDTOs
 {
-    public class ReviewDto
+    public class HistoryDto
     {
         public long Id { get; set; }
-
-        [Range(1, 5)]
-        public int Stars { get; set; }
-        public string? Text { get; set; }
-        public DateTime CreationTime { get; set; }
+        public int LastChapter { get; set; }
+        public int LastPage { get; set; }
+        public DateTime UpdatedAt { get; set; }
         public long UserId { get; set; }
         public long MangaId { get; set; }
 

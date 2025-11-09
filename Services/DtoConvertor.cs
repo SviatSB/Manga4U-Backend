@@ -1,7 +1,8 @@
-﻿using Domain.DTOs;
-using Domain.Models;
+﻿using Domain.Models;
 
-namespace DataInfrastructure
+using Services.DTOs.ModelsDTOs;
+
+namespace Services
 {
     public static class DtoConvertor
     {

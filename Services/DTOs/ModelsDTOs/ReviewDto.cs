@@ -1,10 +1,15 @@
-﻿namespace Domain.DTOs
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Services.DTOs.ModelsDTOs
 {
-    public class CommentDto
+    public class ReviewDto
     {
         public long Id { get; set; }
+
+        [Range(1, 5)]
+        public int Stars { get; set; }
+        public string? Text { get; set; }
         public DateTime CreationTime { get; set; }
-        public string Text { get; set; } = null!;
         public long UserId { get; set; }
         public long MangaId { get; set; }
 

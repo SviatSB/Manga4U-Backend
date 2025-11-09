@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Domain.DTOs.HistoryDTOs
+namespace Services.DTOs.HistoryDTOs
 {
     public class UpdateHistoryDto
     {

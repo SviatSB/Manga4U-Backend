@@ -1,10 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-using Domain.DTOs.AccountDTOs;
-
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+using Services.DTOs.AccountDTOs;
 using Services.Interfaces;
 
 namespace WebApi.Controllers

@@ -1,8 +1,9 @@
-﻿using Domain.DTOs;
-using Domain.Results;
+﻿using Domain.Results;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+
+using Services.DTOs.ModelsDTOs;
 
 namespace Services.Interfaces
 {
