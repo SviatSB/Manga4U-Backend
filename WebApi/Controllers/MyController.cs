@@ -1,9 +1,20 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Reflection.Metadata.Ecma335;
+using System.Runtime.CompilerServices;
+
+using Microsoft.AspNetCore.Mvc;
+
+using Services.DTOs.ModelsDTOs;
+using Services.Interfaces;
 
 namespace WebApi.Controllers
 {
-    public class MyController : ControllerBase
+    public class MyController(IUserService userService) : ControllerBase
     {
         protected string? ContextLogin { get => User.Identity?.Name; }
+        protected async Task<UserDto?> GetCurrentUserAsync()
+        {
+            return ContextLogin is null ? null : await userService.FindAsync(ContextLogin);
+        }
+
     }
 }

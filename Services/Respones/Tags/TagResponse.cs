@@ -17,6 +17,7 @@ namespace Services.Respones.Tags
         public TagAttributes Attributes { get; set; } // Ссылка на TagAttributes
 
         public string tag { get => this.Attributes.Name.en; }
+        public string group { get => this.Attributes.Group; }
         // Добавьте остальные поля, такие как "type", "relationships", если они нужны
         // ...
     }
@@ -33,5 +34,13 @@ namespace Services.Respones.Tags
     {
         [JsonProperty("name")]
         public NameAttributes Name { get; set; } // Ссылка на NameAttributes
+        [JsonProperty("group")]
+        public string Group { get; set; }
+    }
+
+    public class TagsListResponse
+    {
+        [JsonProperty("data")]
+        public List<TagResponse> Data { get; set; }
     }
 }

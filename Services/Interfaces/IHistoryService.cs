@@ -4,12 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Services.DTOs.HistoryDTOs;
+
 namespace Services.Interfaces
 {
     public interface IHistoryService
     {
-        //GetAll
-        //GetRecomendation (специальный dto или result)
-        //обновить историю
+        Task<IEnumerable<GetHistoryDto>> GetAllAsync(long userId);
+        Task UpdateHistoryAsync(long userId, UpdateHistoryDto dto);
+        Task<List<RecomendationDto>> GetRecomendationAsync(long userId, int limit);
+
     }
 }

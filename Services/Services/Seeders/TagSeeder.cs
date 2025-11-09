@@ -23,7 +23,8 @@ namespace Services.Services.Seeders
                 .Select(t => new Tag
                 {
                     TagExternalId = t.id,
-                    Name = t.tag
+                    Name = t.tag,
+                    Group = t.group
                 });
 
             await tagRepository.AddTagsAsync(tags);

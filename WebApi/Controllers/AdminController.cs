@@ -10,13 +10,9 @@ namespace WebApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AdminController : MyController
+    public class AdminController(IAccountService accountService, IUserService userService) : MyController(userService)
     {
-        IAccountService _accountService;
-        public AdminController(IAccountService accountService)
-        {
-            _accountService = accountService;
-        }
+        private readonly IAccountService _accountService = accountService;
 
         [Authorize(Roles = "Admin")]
         [HttpPost("user/{userId}/ban")]

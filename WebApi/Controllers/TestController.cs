@@ -6,7 +6,7 @@ using Services.Interfaces;
 namespace WebApi.Controllers
 {
     [ApiController]
-    public class TestController(IMangaDexService mangaDexService) : Controller
+    public class TestController(IMangaDexService mangaDexService, IMangaService mangaService, IUserService userService) : MyController(userService)
     {
         [HttpPost("ping")]
         public IActionResult Ping()
@@ -20,6 +20,26 @@ namespace WebApi.Controllers
             var res = await mangaDexService.GetTagsAsync();
 
             return Ok(res);
+        }
+
+        [HttpPost("mangatest")]
+        public async Task<IActionResult> MangaTest()
+        {
+            var res = await mangaDexService.GetMangaAsync("cbf174ca-af25-4410-82fa-498a6df9ad3c");
+            return Ok(res);
+        }
+
+        [HttpPost("mangatest2")]
+        public async Task<IActionResult> MangaTest2()
+        {
+            await mangaService.AddIfNotExist("cbf174ca-af25-4410-82fa-498a6df9ad3c");
+            return Ok();
+        }
+
+        [HttpGet("usertest")]
+        public async Task<IActionResult> UserTest()
+        {
+            return Ok(await this.GetCurrentUserAsync());
         }
     }
 }

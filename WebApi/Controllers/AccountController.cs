@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Services.DTOs.AccountDTOs;
 using Services.Interfaces;
 
+//TODO впринципе можно было бы убрать проверку на this.ContextLogin == null. И вместо ContextLogin передавать в сервисы id из метода GetCurrenctUser()
+
 namespace WebApi.Controllers
 {
     [ApiController]
@@ -13,8 +15,8 @@ namespace WebApi.Controllers
     public class AccountController : MyController
     {
         private readonly IAccountService _accountService;
-
-        public AccountController(IAccountService accountService)
+        
+        public AccountController(IAccountService accountService, IUserService userService) : base(userService)
         {
             this._accountService = accountService;
         }

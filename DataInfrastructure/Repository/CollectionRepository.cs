@@ -2,7 +2,7 @@
 
 namespace DataInfrastructure.Repository
 {
-    public class CollectionRepository : IMangaRepository
+    public class CollectionRepository : ICollectionRepository
     {
     }
 }

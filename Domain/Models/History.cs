@@ -3,7 +3,6 @@
     public class History
     {
         public long Id { get; set; }
-        public string MangaName { get; set; } = null!;
         public string LastChapterId { get; set; } = null!;
         public string Language { get; set; } = null!;
         public string LastChapterTitle { get; set; } = null!;

@@ -10,7 +10,7 @@ namespace WebApi.Controllers
     public class MangaDexProxyController : MyController
     {
         private readonly IMangaDexService _proxy;
-        public MangaDexProxyController(IMangaDexService proxy)
+        public MangaDexProxyController(IMangaDexService proxy, IUserService userService) : base(userService)
         {
             _proxy = proxy;
         }
