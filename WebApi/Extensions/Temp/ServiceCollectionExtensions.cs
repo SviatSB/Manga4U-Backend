@@ -4,6 +4,7 @@ using Domain.Models;
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
+using Microsoft.OpenApi.Models;
 
 using SharedConfiguration.Options;
 
@@ -15,7 +16,25 @@ namespace WebApi.Extensions.Temp
         {
             services.AddControllers();
             services.AddEndpointsApiExplorer();
-            services.AddSwaggerGen();
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Manga4U API", Version = "v1" });
+                var jwtScheme = new OpenApiSecurityScheme
+                {
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Description = "Enter JWT token. Example: Bearer {token}",
+                    Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
+                };
+                c.AddSecurityDefinition("Bearer", jwtScheme);
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    { jwtScheme, Array.Empty<string>() }
+                });
+            });
             return services;
         }
 
