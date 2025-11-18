@@ -23,9 +23,16 @@ namespace WebApi.Controllers
         [Authorize]
         public async Task<IActionResult> UpdateHistory([FromBody] UpdateHistoryDto dto)
         {
+            //Проверяется только айди манги, а айди главы и номер главы - нет. Поэтому аккуратно с этим.
+
             var user = await GetCurrentUserAsync();
 
-            await historyService.UpdateHistoryAsync(user.Id, dto);
+            var result = await historyService.UpdateHistoryAsync(user.Id, dto);
+
+            if (!result.IsSucceed)
+            {
+                return BadRequest(result.ErrorMessage);
+            }
 
             return Ok();
         }

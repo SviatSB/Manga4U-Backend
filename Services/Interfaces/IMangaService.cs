@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Domain.Models;
+﻿using Domain.Models;
+
+using Services.Results;
 
 namespace Services.Interfaces
 {
     public interface IMangaService
     {
-        Task<Manga> AddIfNotExist(string id);
+        Task<Result<Manga>> AddIfNotExist(string id);
     }
 }

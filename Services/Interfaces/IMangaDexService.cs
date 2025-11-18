@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Http;
 
 using Services.Respones.Tags;
 
+using Services.Results;
+
 using static Services.DTOs.MangaDTOs.MangaDexMangaDto;
 
 namespace Services.Interfaces
@@ -11,7 +13,7 @@ namespace Services.Interfaces
     public interface IMangaDexService
     {
         Task<ProxyResult> ProxyGetAsync(string path, IQueryCollection query);
-        Task<RootResponse> GetMangaAsync(string id);
+        Task<Result<RootResponse>> GetMangaAsync(string id);
         Task<TagsListResponse> GetTagsAsync();
     }
 }

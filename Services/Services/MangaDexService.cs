@@ -7,9 +7,10 @@ using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json;
 
-using Services.DTOs.MangaDTOs;
 using Services.Interfaces;
 using Services.Respones.Tags;
+
+using Services.Results;
 
 using static Services.DTOs.MangaDTOs.MangaDexMangaDto;
 
@@ -28,10 +29,17 @@ namespace Services.Services
             _cacheOptions = cacheOptions.Value;
         }
 
-        public async Task<RootResponse> GetMangaAsync(string id)
+        public async Task<Result<RootResponse>> GetMangaAsync(string id)
         {
-            var josn = await _httpClient.GetStringAsync($"manga/{id}");
-            return JsonConvert.DeserializeObject<RootResponse>(josn)!;
+            try
+            {
+                var josn = await _httpClient.GetStringAsync($"manga/{id}");
+                return Result<RootResponse>.Success(JsonConvert.DeserializeObject<RootResponse>(josn)!);
+            }
+            catch (HttpRequestException ex)
+            {
+                return Result<RootResponse>.Failure($"Error fetching manga with ID {id}: {ex.Message}");
+            }
         }
 
         public async Task<TagsListResponse> GetTagsAsync()

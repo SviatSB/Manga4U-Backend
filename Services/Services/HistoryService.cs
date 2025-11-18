@@ -64,7 +64,11 @@ namespace Services.Services
                 return Result.Failure("User not found.");
 
             // Ensure manga exists via service (handles external retrieval / creation)
-            var manga = await _mangaService.AddIfNotExist(dto.MangaExternalId);
+            var addIfNotExistResult = await _mangaService.AddIfNotExist(dto.MangaExternalId);
+            if (!addIfNotExistResult.IsSucceed)
+                return Result.Failure($"Manga could not be added or found: {addIfNotExistResult.ErrorMessage}");
+
+            var manga = addIfNotExistResult.Value;
 
             var existing = await _historyRepository.GetAsync(userId, dto.MangaExternalId);
             if (existing == null)
