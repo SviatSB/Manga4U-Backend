@@ -24,7 +24,9 @@ namespace WebApi.Controllers
         public async Task<IActionResult> UpdateHistory([FromBody] UpdateHistoryDto dto)
         {
             var user = await GetCurrentUserAsync();
+
             await historyService.UpdateHistoryAsync(user.Id, dto);
+
             return Ok();
         }
 
