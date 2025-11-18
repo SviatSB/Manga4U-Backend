@@ -36,6 +36,7 @@ namespace WebApi
                 .AddAppJwt()
                 .AddSeeders()
                 .AddFrontendCors(FrontendCorsPolicy)
+                .AddFluentValidationExtensions()
                 .AddAppControllersAndSwagger();
 
             services.AddHostedService<SeederHostedService>();

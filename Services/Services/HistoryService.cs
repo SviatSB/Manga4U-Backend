@@ -1,11 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using DataInfrastructure.Interfaces;
+﻿using DataInfrastructure.Interfaces;
+
 using Domain.Models;
+
+using FluentValidation;
+
 using Services.DTOs.HistoryDTOs;
+using Services.DtoValidators;
 using Services.Interfaces;
+using Services.Results;
 
 namespace Services.Services
 {
@@ -43,17 +45,30 @@ namespace Services.Services
             });
         }
 
-        public async Task UpdateHistoryAsync(long userId, UpdateHistoryDto dto)
+        public async Task<Result> UpdateHistoryAsync(long userId, UpdateHistoryDto dto)
         {
             if (dto == null) throw new ArgumentNullException(nameof(dto));
-            if (string.IsNullOrWhiteSpace(dto.MangaExternalId)) throw new ArgumentException("MangaExternalId required", nameof(dto));
+
+            var validator = new UpdateHistoryDtoValidator();
+            var validatorResult = await validator.ValidateAsync(dto);
+
+            if (!validatorResult.IsValid)
+            {
+                var errors = string.Join("; ", validatorResult.Errors.Select(e => e.ErrorMessage));
+                return Result.Failure($"Validation failed: {errors}");
+            }
 
             // verify user exists
             var user = await _userRepository.FindAsync(userId);
-            if (user == null) throw new InvalidOperationException("User not found");
+            if (user == null)
+                return Result.Failure("User not found.");
 
             // Ensure manga exists via service (handles external retrieval / creation)
-            var manga = await _mangaService.AddIfNotExist(dto.MangaExternalId);
+            var addIfNotExistResult = await _mangaService.AddIfNotExist(dto.MangaExternalId);
+            if (!addIfNotExistResult.IsSucceed)
+                return Result.Failure($"Manga could not be added or found: {addIfNotExistResult.ErrorMessage}");
+
+            var manga = addIfNotExistResult.Value;
 
             var existing = await _historyRepository.GetAsync(userId, dto.MangaExternalId);
             if (existing == null)
@@ -88,6 +103,8 @@ namespace Services.Services
                     await _historyRepository.UpdateAsync(existing);
                 }
             }
+
+            return Result.Success();
         }
 
         public async Task<List<RecomendationDto>> GetRecomendationAsync(long userId, int limit)

@@ -1,27 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using DataInfrastructure.Interfaces;
 
 using Domain.Models;
 
-using DataInfrastructure.Interfaces;
-
 using Services.Interfaces;
+using Services.Results;
 
 namespace Services.Services
 {
     public class MangaService(IMangaRepository mangaRepository, IMangaDexService mangaDexService) : IMangaService
     {
-        public async Task<Manga> AddIfNotExist(string id)
+        public async Task<Result<Manga>> AddIfNotExist(string id)
         {
             var manga = await mangaRepository.FindByExternalIdAsync(id);
 
             if (manga == null)
             {
-                var root = await mangaDexService.GetMangaAsync(id);
-                var dto = root.Data;
+                var getMangaResult = await mangaDexService.GetMangaAsync(id);
+                if(!getMangaResult.IsSucceed)
+                {
+                    return Result<Manga>.Failure(getMangaResult.ErrorMessage);
+                }
+
+                var dto = getMangaResult.Value.Data;
                 manga = new Manga()
                 {
                     Name = dto.Name,
@@ -32,7 +32,7 @@ namespace Services.Services
                 await mangaRepository.LinkTagsByExternalIdsAsync(manga, dto.TagIds);
             }
 
-            return manga;
+            return Result<Manga>.Success(manga);
         }
     }
 }
