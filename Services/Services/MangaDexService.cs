@@ -74,10 +74,44 @@ namespace Services.Services
             if (query.Count == 0)
                 return baseUri.ToString();
 
-            return QueryHelpers.AddQueryString(
-                baseUri.ToString(),
-                query.ToDictionary(k => k.Key, v => v.Value.ToString())
-                     .Where(kv => kv.Key != "path"));
+            // Побудова URI з правильним форматуванням масивів
+            var uriBuilder = new UriBuilder(baseUri);
+            var queryBuilder = new System.Text.StringBuilder();
+
+            bool firstParam = true;
+            foreach (var kv in query)
+            {
+                if (kv.Key == "path")
+                    continue;
+
+                // Для масивів (параметри з []) передаємо кожне значення окремо
+                if (kv.Key.Contains("[]"))
+                {
+                    foreach (var value in kv.Value)
+                    {
+                        if (!firstParam)
+                            queryBuilder.Append('&');
+                        queryBuilder.Append(Uri.EscapeDataString(kv.Key));
+                        queryBuilder.Append('=');
+                        queryBuilder.Append(Uri.EscapeDataString(value ?? string.Empty));
+                        firstParam = false;
+                    }
+                }
+                else
+                {
+                    if (!firstParam)
+                        queryBuilder.Append('&');
+                    queryBuilder.Append(Uri.EscapeDataString(kv.Key));
+                    queryBuilder.Append('=');
+                    queryBuilder.Append(Uri.EscapeDataString(kv.Value.ToString()));
+                    firstParam = false;
+                }
+            }
+
+            if (queryBuilder.Length > 0)
+                uriBuilder.Query = queryBuilder.ToString();
+
+            return uriBuilder.ToString();
         }
     }
 }
