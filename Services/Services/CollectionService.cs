@@ -100,5 +100,68 @@ namespace Services.Services
 
             return Result.Success();
         }
+
+        public async Task<Result<Collection>> CreateCollectionAsync(long userId, string name)
+        {
+            var user = await userRepository.FindWithCollections(userId);
+            if (user is null)
+                return Result<Collection>.Failure("No such user");
+
+            var collection = new Collection
+            {
+                Name = name,
+            };
+
+            user.Collections.Add(collection);
+            await collectionRepository.SaveChangesAsync();
+
+            return Result<Collection>.Success(collection);
+        }
+
+        public async Task<Result> DeleteCollectionAsync(long userId, long collectionId)
+        {
+            var user = await userRepository.FindWithCollections(userId);
+            if (user is null)
+                return Result.Failure("No such user");
+
+            var ownership = EnsureUserOwnsCollection(user, collectionId);
+            if (!ownership.IsSucceed || ownership.Value is null)
+                return Result.Failure(ownership.ErrorMessage);
+
+            var collection = ownership.Value;
+
+            if (collection.SystemCollectionType is not null)
+                return Result.Failure("Cannot delete a system collection");
+
+            user.Collections.Remove(collection);
+            await collectionRepository.SaveChangesAsync();
+
+            return Result.Success();
+        }
+
+        // Переименовать коллекцию: только владелец и только если не системная
+        public async Task<Result> RenameCollectionAsync(long userId, long collectionId, string newName)
+        {
+            if (string.IsNullOrWhiteSpace(newName))
+                return Result.Failure("Name cannot be empty");
+
+            var user = await userRepository.FindWithCollections(userId);
+            if (user is null)
+                return Result.Failure("No such user");
+
+            var ownership = EnsureUserOwnsCollection(user, collectionId);
+            if (!ownership.IsSucceed || ownership.Value is null)
+                return Result.Failure(ownership.ErrorMessage);
+
+            var collection = ownership.Value;
+
+            if (collection.SystemCollectionType is not null)
+                return Result.Failure("Cannot rename a system collection");
+
+            collection.Name = newName;
+            await collectionRepository.SaveChangesAsync();
+
+            return Result.Success();
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Services.Results;
+using Domain.Models;
 
 namespace Services.Interfaces
 {
@@ -9,10 +10,12 @@ namespace Services.Interfaces
 
         //добавить мангу в коллекцию
         Task<Result> AddMangaToCollectionAsync(long userId, long collectionId, string mangaExternalId);
-        //Task<Result> AddMangaToCollection(long userId, long collectionId, long mangaInnerId);
 
         //удалить мангу из коллекции
         Task<Result> RemoveMangaFromCollectionAsync(long user, long collectionId, string mangaExternalId);
-        //Task<Result> RemoveMangaFromCollection(long user, long collectionId, long mangaInnerId);
+        Task<Result<Collection>> CreateCollectionAsync(long userId, string name);
+        Task<Result> DeleteCollectionAsync(long userId, long collectionId);
+
+        Task<Result> RenameCollectionAsync(long userId, long collectionId, string newName);
     }
 }
