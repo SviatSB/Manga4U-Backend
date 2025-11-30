@@ -19,7 +19,7 @@ namespace Services.Results
         {
             return new Result<T>(true, value, string.Empty);
         }
-        new public static Result<T> Failure(string errorMessage)
+        public static Result<T> Failure(string errorMessage)
         {
             return new Result<T>(false, default, errorMessage);
         }

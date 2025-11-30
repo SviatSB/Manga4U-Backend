@@ -14,8 +14,5 @@ namespace Services.Interfaces
         //удалить мангу из коллекции
         Task<Result> RemoveMangaFromCollectionAsync(long user, long collectionId, string mangaExternalId);
         //Task<Result> RemoveMangaFromCollection(long user, long collectionId, long mangaInnerId);
-
-        //проверка на принадлежность коллекции к пользователю
-        Task<Result<bool>> IsUserCollectionAsync(long userId, long collectionId);
     }
 }

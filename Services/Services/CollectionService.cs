@@ -1,4 +1,6 @@
 ﻿
+using System;
+
 using Azure.Core;
 
 using DataInfrastructure.Interfaces;
@@ -16,34 +18,71 @@ namespace Services.Services
     {
         public async Task<Result> AddMangaToCollectionAsync(long userId, long collectionId, string mangaExternalId)
         {
-            var user = await userRepository.FindWithCollections(userId);
-            if (user is null)
-            {
-                return Result.Failure("User not found");
-            }
+            var validation = await ValidateMangaOperation(userId, collectionId, mangaExternalId);
+            if (!validation.IsSucceed)
+                return Result.Failure(validation.ErrorMessage);
 
-            var mangaResult = await mangaService.GetOrAdd(mangaExternalId);
-            if (!mangaResult.IsSucceed || mangaResult.Value is null)
-            {
-                return Result.Failure("Manga not found");
-            }
+            var (collection, manga) = validation.Value;
 
-            var collection = user.Collections.FirstOrDefault(c => c.Id == collectionId);
-            if (collection is null)
-            {
-                return Result.Failure("Collection not found or not belong to this user");
-            }
+            if (!collection.Mangas.Any(m => m.Id == manga.Id))
+                collection.Mangas.Add(manga);
 
-            await LinkManga(mangaResult.Value, collection);
+            await collectionRepository.SaveChangesAsync();
 
             return Result.Success();
         }
 
-        private Task LinkManga(Manga manga, Collection collection)
+
+        private async Task<Result<(Collection collection, Manga manga)>>
+            ValidateMangaOperation(long userId, long collectionId, string mangaExternalId)
         {
-            collection.Mangas.Add(manga);
-            return collectionRepository.SaveChangesAsync();
+            var user = await userRepository.FindWithCollections(userId);
+            if (user is null)
+                return Result<(Collection, Manga)>.Failure("No such user");
+
+            var collectionResult = EnsureUserOwnsCollection(user, collectionId);
+            if (!collectionResult.IsSucceed)
+                return Result<(Collection, Manga)>.Failure(collectionResult.ErrorMessage);
+
+            var collection = collectionResult.Value;
+
+            var mangaResult = await mangaService.GetOrAdd(mangaExternalId);
+            if (!mangaResult.IsSucceed || mangaResult.Value is null)
+                return Result<(Collection, Manga)>.Failure("Manga not found");
+
+            return Result<(Collection, Manga)>.Success((collection, mangaResult.Value));
         }
+
+
+        private Result<Collection> EnsureUserOwnsCollection(User user, long collectionId)
+        {
+            var collection = user.Collections.FirstOrDefault(c => c.Id == collectionId);
+
+            return collection is null
+                ? Result<Collection>.Failure("Collection not found or not owned by user")
+                : Result<Collection>.Success(collection);
+        }
+
+
+
+        public async Task<Result> RemoveMangaFromCollectionAsync(long userId, long collectionId, string mangaExternalId)
+        {
+            var validation = await ValidateMangaOperation(userId, collectionId, mangaExternalId);
+            if (!validation.IsSucceed)
+                return Result.Failure(validation.ErrorMessage);
+
+            var (collection, manga) = validation.Value;
+
+            var item = collection.Mangas.FirstOrDefault(m => m.Id == manga.Id);
+            if (item is not null)
+                collection.Mangas.Remove(item);
+
+            await collectionRepository.SaveChangesAsync();
+
+            return Result.Success();
+        }
+
+        //-------------------------------------------------------------
 
         public async Task<Result> AddSystemCollectionsAsync(long userId)
         {
@@ -60,16 +99,6 @@ namespace Services.Services
             }
 
             return Result.Success();
-        }
-
-        public async Task<Result<bool>> IsUserCollectionAsync(long userId, long collectionId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<Result> RemoveMangaFromCollectionAsync(long user, long collectionId, string mangaExternalId)
-        {
-            throw new NotImplementedException();
         }
     }
 }
