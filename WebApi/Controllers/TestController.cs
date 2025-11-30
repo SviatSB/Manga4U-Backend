@@ -32,7 +32,7 @@ namespace WebApi.Controllers
         [HttpPost("mangatest2")]
         public async Task<IActionResult> MangaTest2()
         {
-            await mangaService.AddIfNotExist("cbf174ca-af25-4410-82fa-498a6df9ad3c");
+            await mangaService.GetOrAdd("cbf174ca-af25-4410-82fa-498a6df9ad3c");
             return Ok();
         }
 

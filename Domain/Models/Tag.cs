@@ -1,8 +1,7 @@
 ﻿namespace Domain.Models
 {
-    public class Tag
+    public class Tag : EntityBase
     {
-        public long Id { get; set; }  // PK
         public string Name { get; set; } = null!; //not null
         public string TagExternalId { get; set; } = null!; //not null
         public string Group { get; set; } = null!; //not null

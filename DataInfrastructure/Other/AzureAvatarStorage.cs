@@ -7,7 +7,7 @@ using Microsoft.Extensions.Options;
 
 using SharedConfiguration.Options;
 
-namespace DataInfrastructure.Repository
+namespace DataInfrastructure.Other
 {
     public class AzureAvatarStorage : IAvatarStorage
     {

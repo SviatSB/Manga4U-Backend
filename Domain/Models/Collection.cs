@@ -1,8 +1,7 @@
 ﻿namespace Domain.Models
 {
-    public class Collection
+    public class Collection : EntityBase
     {
-        public long Id { get; set; }
         public DateTime CreationTime { get; set; } = DateTime.Now; //not null | has default
         public string Name { get; set; } = null!;  //not null
         public bool IsPublic { get; set; } = false; //not null | has default
@@ -19,6 +18,7 @@
     {
         Favorite,
         Reading,
-        WantToRead
+        WantToRead,
+        Completed,
     }
 }

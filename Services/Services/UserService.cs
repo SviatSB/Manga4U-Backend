@@ -18,7 +18,7 @@ namespace Services.Services
             var user = await _userRepository.FindAsync(login);
             if (user == null) return null;
             var roles = await _userRepository.GetRolesAsync(user);
-            return DtoConvertor.UserToDto(user, roles);
+            return DtoConvertor.CreateUserDto(user, roles);
         }
 
         public async Task<UserDto?> FindAsync(long userId)
@@ -26,7 +26,7 @@ namespace Services.Services
             var user = await _userRepository.FindAsync(userId);
             if (user == null) return null;
             var roles = await _userRepository.GetRolesAsync(user);
-            return DtoConvertor.UserToDto(user, roles);
+            return DtoConvertor.CreateUserDto(user, roles);
         }
     }
 }

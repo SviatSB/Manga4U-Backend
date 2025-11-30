@@ -8,7 +8,7 @@ using Domain.Models;
 
 namespace DataInfrastructure.Interfaces
 {
-    public interface ITagRepository
+    public interface ITagRepository : IRepository<Tag>
     {
         Task AddTagsAsync(IEnumerable<Tag> tags);
         List<string> GetAllExternalId();
