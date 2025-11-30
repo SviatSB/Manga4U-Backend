@@ -12,17 +12,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DataInfrastructure.Repository
 {
-    public class TagRepository(MyDbContext myDbContext) : ITagRepository
+    public class TagRepository : Repository<Tag>, ITagRepository
     {
+        public TagRepository(MyDbContext myDbContext) : base(myDbContext) { }
         public async Task AddTagsAsync(IEnumerable<Tag> tags)
         {
-            await myDbContext.Tags.AddRangeAsync(tags);
-            await myDbContext.SaveChangesAsync();
+            await _myDbContext.Tags.AddRangeAsync(tags);
+            await _myDbContext.SaveChangesAsync();
         }
 
         public List<string> GetAllExternalId()
         {
-            return myDbContext.Tags.Select(x => x.TagExternalId).ToList();
+            return _myDbContext.Tags.Select(x => x.TagExternalId).ToList();
         }
     }
 }

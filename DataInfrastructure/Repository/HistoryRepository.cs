@@ -6,17 +6,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DataInfrastructure.Repository
 {
-    public class HistoryRepository : IHistoryRepository
+    public class HistoryRepository : Repository<History>, IHistoryRepository
     {
-        private readonly MyDbContext _db;
-        public HistoryRepository(MyDbContext db)
-        {
-            _db = db;
-        }
+        public HistoryRepository(MyDbContext myDbContext) : base(myDbContext) { }
 
         public Task<List<History>> GetUserHistoriesAsync(long userId)
         {
-            return _db.Histories
+            return _myDbContext.Histories
                 .Include(h => h.Manga)
                 .Where(h => h.UserId == userId)
                 .OrderByDescending(h => h.UpdatedAt)
@@ -25,27 +21,21 @@ namespace DataInfrastructure.Repository
 
         public Task<History?> GetAsync(long userId, string mangaExternalId)
         {
-            return _db.Histories
+            return _myDbContext.Histories
                 .Include(h => h.Manga)
                 .Where(h => h.UserId == userId && h.MangaExternalId == mangaExternalId)
                 .SingleOrDefaultAsync();
         }
 
-        public async Task AddAsync(History history)
-        {
-            await _db.Histories.AddAsync(history);
-            await _db.SaveChangesAsync();
-        }
-
         public async Task UpdateAsync(History history)
         {
-            _db.Histories.Update(history);
-            await _db.SaveChangesAsync();
+            _myDbContext.Histories.Update(history);
+            await _myDbContext.SaveChangesAsync();
         }
 
         public Task<List<long>> GetLastMangaIdsAsync(long userId, int limit)
         {
-            return _db.Histories
+            return _myDbContext.Histories
                 .Where(h => h.UserId == userId)
                 .OrderByDescending(h => h.UpdatedAt)
                 .Select(h => h.MangaId)

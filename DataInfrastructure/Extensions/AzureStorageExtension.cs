@@ -1,7 +1,7 @@
 ﻿using Azure.Storage.Blobs;
 
 using DataInfrastructure.Interfaces;
-using DataInfrastructure.Repository;
+using DataInfrastructure.Other;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;

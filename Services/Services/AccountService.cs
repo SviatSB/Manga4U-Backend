@@ -16,11 +16,13 @@ namespace Services.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly IJwtTokenGenerator _jwtTokenGenerator;
+        private readonly ICollectionService _collectionService;
 
-        public AccountService(IUserRepository userRepository, IJwtTokenGenerator jwtTokenGenerator)
+        public AccountService(IUserRepository userRepository, IJwtTokenGenerator jwtTokenGenerator, ICollectionService collectionService)
         {
             _userRepository = userRepository;
             _jwtTokenGenerator = jwtTokenGenerator;
+            _collectionService = collectionService;
         }
 
         public async Task<IdentityResult> ChangePasswordAsync(string login, string oldPassword, string newPassword)
@@ -68,6 +70,10 @@ namespace Services.Services
             var result = await _userRepository.CreateAsync(user, password);
             if (result.Succeeded)
                 await _userRepository.AddToRoleAsync(user, "User");
+
+            user = await _userRepository.FindAsync(login);
+
+            await _collectionService.AddSystemCollectionsAsync(user!.Id);
 
             return result;
         }

@@ -6,6 +6,6 @@ namespace Services.Interfaces
 {
     public interface IMangaService
     {
-        Task<Result<Manga>> AddIfNotExist(string id);
+        Task<Result<Manga>> GetOrAdd(string id);
     }
 }

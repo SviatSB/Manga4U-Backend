@@ -9,7 +9,13 @@ namespace DataInfrastructure.Interfaces
     {
         Task<User?> FindAsync(string login);
         Task<User?> FindAsync(long userId);
+
+        //TODO избавится от дублирования метода FindAsync
         Task<User?> GetByLoginAsync(string login);
+
+        Task<User?> FindWithCollections(long userId);
+
+        Task<IEnumerable<User>> GetAllUsersAsync();
 
         Task<IdentityResult> CreateAsync(User user, string password);
         Task<IdentityResult> AddToRoleAsync(User user, string role);

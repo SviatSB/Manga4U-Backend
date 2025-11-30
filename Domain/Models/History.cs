@@ -1,8 +1,7 @@
 ﻿namespace Domain.Models
 {
-    public class History
+    public class History : EntityBase
     {
-        public long Id { get; set; }
         public string LastChapterId { get; set; } = null!;
         public string Language { get; set; } = null!;
         public string LastChapterTitle { get; set; } = null!;

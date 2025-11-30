@@ -18,6 +18,7 @@ namespace Services.Extensions
             //не синглтон, потому что там внутри исползьуется dbcontext и так будет проще
             services.AddScoped<ISeeder, TagSeeder>();
             services.AddScoped<ISeeder, IdentitySeeder>();
+            services.AddScoped<ISeeder, SystemCollectionSeeder>();
 
             return services;
         }

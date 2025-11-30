@@ -1,4 +1,6 @@
-﻿using DataInfrastructure.Interfaces;
+﻿using System.Collections;
+
+using DataInfrastructure.Interfaces;
 
 using Domain.Models;
 
@@ -36,9 +38,27 @@ namespace DataInfrastructure.Repository
             => _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
         //public Task<IdentityResult> UpdateAsync(User user) => _userManager.UpdateAsync(user);
 
+        public async Task<IEnumerable<User>> GetAllUsersAsync()
+        {
+            return await _userManager.Users.ToListAsync();
+        }
 
+        public async Task<User?> FindWithCollections(long userId)
+        {
+            var user = await FindAsync(userId);
+
+            if (user != null)
+            {
+                await _myDbContext.Entry(user)
+                    .Collection(u => u.Collections)
+                    .LoadAsync();
+            }
+
+            return user;
+        }
 
         //-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+        //хахахахахаа какой ужас
         public async Task ChangeNicknameAsync(User user, string newNickname)
         {
             user.Nickname = newNickname;

@@ -9,6 +9,7 @@ namespace DataInfrastructure.Extensions
     {
         public static IServiceCollection AddAppRepository(this IServiceCollection services)
         {
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IMangaRepository, MangaRepository>();
             services.AddScoped<ICollectionRepository, CollectionRepository>();

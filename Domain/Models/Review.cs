@@ -2,11 +2,10 @@
 
 namespace Domain.Models
 {
-    public class Review
+    public class Review : EntityBase
     {
         //TODO unique для (user,manga)
 
-        public long Id { get; set; }
 
         [Range(1, 5)]
         public int Stars { get; set; }  // 1-5

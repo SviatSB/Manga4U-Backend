@@ -1,8 +1,7 @@
 ﻿namespace Domain.Models
 {
-    public class Comment
+    public class Comment : EntityBase
     {
-        public long Id { get; set; }
         public DateTime CreationTime { get; set; } = DateTime.Now; //not null | has default
         public string Text { get; set; } = null!; //not null
 

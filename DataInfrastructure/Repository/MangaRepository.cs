@@ -4,17 +4,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DataInfrastructure.Repository
 {
-    public class MangaRepository(MyDbContext myDbContext) : IMangaRepository
+    public class MangaRepository : Repository<Manga>, IMangaRepository
     {
-        public async Task AddAsync(Manga manga)
-        {
-            await myDbContext.Mangas.AddAsync(manga);
-            await myDbContext.SaveChangesAsync();
-        }
+        public MangaRepository(MyDbContext myDbContext) : base(myDbContext) { }
 
         public async Task<Manga?> FindByExternalIdAsync(string id)
         {
-            var res = await myDbContext.Mangas.SingleOrDefaultAsync(m => m.ExternalId == id);
+            var res = await _myDbContext.Mangas.SingleOrDefaultAsync(m => m.ExternalId == id);
             return res;
         }
 
@@ -24,8 +20,8 @@ namespace DataInfrastructure.Repository
             if (tagExternalIds == null) throw new ArgumentNullException(nameof(tagExternalIds));
 
             // Attach manga if not tracked and ensure tags collection loaded
-            myDbContext.Attach(manga);
-            await myDbContext.Entry(manga).Collection(m => m.Tags).LoadAsync();
+            _myDbContext.Attach(manga);
+            await _myDbContext.Entry(manga).Collection(m => m.Tags).LoadAsync();
 
             var tagExternalIdsSet = tagExternalIds
                 .Where(id => !string.IsNullOrWhiteSpace(id))
@@ -35,7 +31,7 @@ namespace DataInfrastructure.Repository
                 return; // nothing to link
 
             // Fetch all tags that match provided external ids
-            var tags = await myDbContext.Tags
+            var tags = await _myDbContext.Tags
                 .Where(t => tagExternalIdsSet.Contains(t.TagExternalId))
                 .ToListAsync();
 
@@ -52,7 +48,7 @@ namespace DataInfrastructure.Repository
                 }
             }
 
-            await myDbContext.SaveChangesAsync();
+            await _myDbContext.SaveChangesAsync();
         }
 
         public async Task<List<Tag>> GetTagsForMangasAsync(IEnumerable<long> mangaIds)
@@ -61,7 +57,7 @@ namespace DataInfrastructure.Repository
             if (ids.Length == 0) return new List<Tag>();
 
             // Select tags through the many-to-many relationship
-            return await myDbContext.Mangas
+            return await _myDbContext.Mangas
                 .Where(m => ids.Contains(m.Id))
                 .SelectMany(m => m.Tags)
                 .ToListAsync();
