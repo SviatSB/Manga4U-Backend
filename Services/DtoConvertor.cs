@@ -2,6 +2,7 @@
 
 using Services.DTOs.CollectionDTOs;
 using Services.DTOs.ModelsDTOs;
+using Services.DTOs.ReviewDTOs;
 
 namespace Services
 {
@@ -79,6 +80,25 @@ namespace Services
         public static List<CommentDto> CreateCommentDto(IEnumerable<Comment> comments)
         {
             return comments.Select(CreateCommentDto).ToList();
+        }
+
+        public static ReviewResponseDto CreateReviewDto(Review review)
+        {
+            return new ReviewResponseDto
+            {
+                Id = review.Id,
+                Stars = review.Stars,
+                Text = review.Text,
+                CreationTime = review.CreationTime,
+                UserId = review.UserId,
+                UserNickname = review.User?.Nickname,
+                UserAvatarUrl = review.User?.AvatarUrl
+            };
+        }
+
+        public static List<ReviewResponseDto> CreateReviewDto(IEnumerable<Review> reviews)
+        {
+            return reviews.Select(CreateReviewDto).ToList();
         }
     }
 }

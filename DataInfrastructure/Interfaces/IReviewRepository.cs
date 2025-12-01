@@ -12,5 +12,8 @@ namespace DataInfrastructure.Interfaces
 {
     public interface IReviewRepository : IRepository<Review>
     {
+        Task<(IReadOnlyList<Review> Items, int TotalCount)> GetReviewsByMangaIdAsync(long mangaId, int skip, int take);
+        Task<bool> UserHasReviewAsync(long userId, long mangaId);
+        Task<double> GetAverageStarsAsync(long mangaId);
     }
 }
