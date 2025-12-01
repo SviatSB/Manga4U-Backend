@@ -22,6 +22,20 @@ namespace Services.Services
                 return Result.Failure("User is muted.");
             }
 
+            if (string.IsNullOrWhiteSpace(mangaChapterExternalId))
+            {
+                return Result.Failure("Chapter id is required.");
+            }
+
+            if (parentCommentId is not null)
+            {
+                var parentComment = await commentRepository.GetAsync(parentCommentId.Value);
+                if (parentComment is null)
+                {
+                    return Result.Failure("Parent comment not found.");
+                }
+            }
+
             await commentRepository.AddAsync(
                 new Comment
                 {

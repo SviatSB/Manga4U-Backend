@@ -61,5 +61,24 @@ namespace Services
                 .ToList();
         }
 
+        public static CommentDto CreateCommentDto(Comment comment)
+        {
+            return new CommentDto
+            {
+                Id = comment.Id,
+                CreationTime = comment.CreationTime,
+                Text = comment.Text,
+                UserId = comment.UserId,
+                RepliedCommentId = comment.RepliedCommentId,
+                ChapterExternalId = comment.ChapterExternalId,
+                UserNickname = comment.User?.Nickname,
+                UserAvatarUrl = comment.User?.AvatarUrl
+            };
+        }
+
+        public static List<CommentDto> CreateCommentDto(IEnumerable<Comment> comments)
+        {
+            return comments.Select(CreateCommentDto).ToList();
+        }
     }
 }

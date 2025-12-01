@@ -17,6 +17,8 @@ namespace Services.Extensions
             services.AddScoped<IMangaService, MangaService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ICollectionService, CollectionService>();
+            services.AddScoped<ICommentService, CommentService>();
+            services.AddScoped<IReviewService, ReviewService>();
             services.AddHttpClient<IMangaDexService, MangaDexService>("mangadex", (sp, c) =>
             {
                 var proxyOptions = sp.GetRequiredService<IOptions<AppProxyOptions>>().Value;
