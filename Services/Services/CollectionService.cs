@@ -9,7 +9,7 @@ using Domain.Models;
 using Newtonsoft.Json.Linq;
 
 using Services.Interfaces;
-using Services.Results;
+using Services.Results.Base;
 
 namespace Services.Services
 {

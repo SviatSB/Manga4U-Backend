@@ -7,7 +7,7 @@ using FluentValidation;
 using Services.DTOs.HistoryDTOs;
 using Services.DtoValidators;
 using Services.Interfaces;
-using Services.Results;
+using Services.Results.Base;
 
 namespace Services.Services
 {

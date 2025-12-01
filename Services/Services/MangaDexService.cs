@@ -1,7 +1,4 @@
-﻿using Domain.Results;
-
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.WebUtilities;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 
@@ -9,8 +6,7 @@ using Newtonsoft.Json;
 
 using Services.Interfaces;
 using Services.Respones.Tags;
-
-using Services.Results;
+using Services.Results.Base;
 
 using static Services.DTOs.MangaDTOs.MangaDexMangaDto;
 

@@ -3,7 +3,7 @@
 using Domain.Models;
 
 using Services.Interfaces;
-using Services.Results;
+using Services.Results.Base;
 
 namespace Services.Services
 {

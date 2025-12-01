@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Services.Results;
 
 using Services.DTOs.HistoryDTOs;
+using Services.Results.Base;
 
 namespace Services.Interfaces
 {

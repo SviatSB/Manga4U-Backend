@@ -1,4 +1,4 @@
-namespace Domain.Results
+namespace Services.Results.Base
 {
     public class PagedResult<T>
     {

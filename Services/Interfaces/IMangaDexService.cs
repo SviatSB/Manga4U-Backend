@@ -1,10 +1,7 @@
-﻿using Domain.Results;
-
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 
 using Services.Respones.Tags;
-
-using Services.Results;
+using Services.Results.Base;
 
 using static Services.DTOs.MangaDTOs.MangaDexMangaDto;
 

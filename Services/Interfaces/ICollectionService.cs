@@ -1,5 +1,6 @@
-﻿using Services.Results;
-using Domain.Models;
+﻿using Domain.Models;
+
+using Services.Results.Base;
 
 namespace Services.Interfaces
 {
