@@ -49,12 +49,12 @@ namespace Services.Services
 
         }
 
-        public async Task<ProxyResult> ProxyGetAsync(string path, IQueryCollection query)
+        public async Task<Result<string>> ProxyGetAsync(string path, IQueryCollection query)
         {
             string uri = BuildUri(path, query);
 
             if (_cache.TryGetValue(uri, out string? cached))
-                return ProxyResult.Success(cached);
+                return Result<string>.Success(cached);
 
             var response = await _httpClient.GetAsync(uri);
             var result = await response.Content.ReadAsStringAsync();
@@ -62,9 +62,9 @@ namespace Services.Services
             _cache.Set(uri, result, _cacheOptions);
 
             if (response.IsSuccessStatusCode)
-                return ProxyResult.Success(result);
+                return Result<string>.Success(result);
 
-            return ProxyResult.Failure($"{response.StatusCode}: {result}\non uri: {uri}");
+            return Result<string>.Failure($"{response.StatusCode}: {result}\non uri: {uri}");
         }
 
         private string BuildUri(string path, IQueryCollection query)

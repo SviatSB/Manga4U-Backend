@@ -12,7 +12,7 @@ namespace Services.Interfaces
 {
     public interface IMangaDexService
     {
-        Task<ProxyResult> ProxyGetAsync(string path, IQueryCollection query);
+        Task<Result<string>> ProxyGetAsync(string path, IQueryCollection query);
         Task<Result<RootResponse>> GetMangaAsync(string id);
         Task<TagsListResponse> GetTagsAsync();
     }

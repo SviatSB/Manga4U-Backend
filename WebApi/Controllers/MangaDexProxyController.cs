@@ -27,7 +27,7 @@ namespace WebApi.Controllers
 
             var result = await _proxy.ProxyGetAsync(path, Request.Query);
             if (result.IsSucceed)
-                return Content(result.Result!, "application/json");
+                return Content(result.Value!, "application/json");
 
             return BadRequest(result.ErrorMessage);
         }
