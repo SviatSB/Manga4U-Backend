@@ -138,7 +138,7 @@ namespace Services.Services
 
             var roles = await _userRepository.GetRolesAsync(user);
 
-            return DtoConvertor.UserToDto(user, roles);
+            return DtoConvertor.CreateUserDto(user, roles);
         }
 
         public async Task<PagedResult<UserDto>> GetUsersAsync(int skip, int take, string? nickname, string? login, IList<string>? roles)
@@ -149,7 +149,7 @@ namespace Services.Services
             foreach (var u in users)
             {
                 var uRoles = await _userRepository.GetRolesAsync(u);
-                items.Add(DtoConvertor.UserToDto(u, uRoles));
+                items.Add(DtoConvertor.CreateUserDto(u, uRoles));
             }
 
             return new PagedResult<UserDto>

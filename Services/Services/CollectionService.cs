@@ -35,7 +35,7 @@ namespace Services.Services
         private async Task<Result<(Collection collection, Manga manga)>>
             ValidateMangaOperation(long userId, long collectionId, string mangaExternalId)
         {
-            var user = await userRepository.FindWithCollections(userId);
+            var user = await userRepository.FindWithCollectionsAsync(userId);
             if (user is null)
                 return Result<(Collection, Manga)>.Failure("No such user");
 
@@ -92,9 +92,13 @@ namespace Services.Services
 
         public async Task<Result> AddSystemCollectionsAsync(long userId)
         {
+            var user = await userRepository.FindWithCollectionsAsync(userId);
 
             foreach (var type in Enum.GetValues <SystemCollectionType>())
             {
+                if (user!.Collections.Any(c => c.SystemCollectionType == type))
+                    continue;
+
                 var collection = new Collection
                 {
                     Name = type.ToString(),
@@ -109,7 +113,7 @@ namespace Services.Services
 
         public async Task<Result<Collection>> CreateCollectionAsync(long userId, string name)
         {
-            var user = await userRepository.FindWithCollections(userId);
+            var user = await userRepository.FindWithCollectionsAsync(userId);
             if (user is null)
                 return Result<Collection>.Failure("No such user");
 
@@ -126,7 +130,7 @@ namespace Services.Services
 
         public async Task<Result> DeleteCollectionAsync(long userId, long collectionId)
         {
-            var user = await userRepository.FindWithCollections(userId);
+            var user = await userRepository.FindWithCollectionsAsync(userId);
             if (user is null)
                 return Result.Failure("No such user");
 
@@ -151,7 +155,7 @@ namespace Services.Services
             if (string.IsNullOrWhiteSpace(newName))
                 return Result.Failure("Name cannot be empty");
 
-            var user = await userRepository.FindWithCollections(userId);
+            var user = await userRepository.FindWithCollectionsAsync(userId);
             if (user is null)
                 return Result.Failure("No such user");
 
@@ -173,7 +177,7 @@ namespace Services.Services
         // Установить видимость коллекции (только владелец и только если не системная)
         public async Task<Result> SetCollectionPublicAsync(long userId, long collectionId, bool isPublic)
         {
-            var user = await userRepository.FindWithCollections(userId);
+            var user = await userRepository.FindWithCollectionsAsync(userId);
             if (user is null)
                 return Result.Failure("No such user");
 
@@ -202,7 +206,7 @@ namespace Services.Services
                 return Result<Collection>.Failure("Collection not found");
             }
 
-            var user = await userRepository.FindWithCollections(userId);
+            var user = await userRepository.FindWithCollectionsAsync(userId);
             if (user is null)
                 return Result<Collection>.Failure("No such user");
 

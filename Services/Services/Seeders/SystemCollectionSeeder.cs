@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using DataInfrastructure.Interfaces;
+using DataInfrastructure.Repository;
 
 using Domain.Models;
 

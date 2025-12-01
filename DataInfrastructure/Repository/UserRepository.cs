@@ -43,7 +43,7 @@ namespace DataInfrastructure.Repository
             return await _userManager.Users.ToListAsync();
         }
 
-        public async Task<User?> FindWithCollections(long userId)
+        public async Task<User?> FindWithCollectionsAsync(long userId)
         {
             var user = await FindAsync(userId);
 
