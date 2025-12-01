@@ -10,5 +10,7 @@ namespace DataInfrastructure.Interfaces
 {
     public interface ICommentRepository : IRepository<Comment>
     {
+        Task<(IReadOnlyList<Comment> Items, int TotalCount, int ReplyCount)> GetRootCommentsByChapterAsync(string chapterExternalId, int skip, int take);
+        Task<(IReadOnlyList<Comment> Items, int TotalCount, int ReplyCount)> GetRepliesByCommentIdAsync(long parentCommentId, int skip, int take);
     }
 }

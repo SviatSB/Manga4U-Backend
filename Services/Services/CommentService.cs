@@ -1,9 +1,7 @@
 ﻿using DataInfrastructure.Interfaces;
-
 using Services.Interfaces;
 using Services.Results.Base;
 using Services.Results.Custom;
-
 using Domain.Models;
 
 namespace Services.Services
@@ -68,12 +66,40 @@ namespace Services.Services
 
         public async Task<Result<CommentPagedResult>> GetCommentRepliesAsync(int take, int skip, long commentId)
         {
-            throw new NotImplementedException();
+            // validate parent comment exists
+            var parent = await commentRepository.GetAsync(commentId);
+            if (parent is null)
+            {
+                return Result<CommentPagedResult>.Failure("Comment not found");
+            }
+
+            var (items, total, replyCount) = await commentRepository.GetRepliesByCommentIdAsync(commentId, skip, take);
+
+            var result = new CommentPagedResult
+            {
+                TotalCount = total,
+                Items = items.ToList(),
+                ReplyCount = replyCount
+            };
+
+            return Result<CommentPagedResult>.Success(result);
         }
 
         public async Task<Result<CommentPagedResult>> GetRootCommentsAsync(int take, int skip, string mangaChapterExternalId)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrWhiteSpace(mangaChapterExternalId))
+                return Result<CommentPagedResult>.Failure("Chapter id is required");
+
+            var (items, total, replyCount) = await commentRepository.GetRootCommentsByChapterAsync(mangaChapterExternalId, skip, take);
+
+            var result = new CommentPagedResult
+            {
+                TotalCount = total,
+                Items = items.ToList(),
+                ReplyCount = replyCount
+            };
+
+            return Result<CommentPagedResult>.Success(result);
         }
     }
 }
