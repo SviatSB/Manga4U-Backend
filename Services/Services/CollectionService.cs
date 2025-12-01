@@ -200,9 +200,16 @@ namespace Services.Services
         public async Task<Result<Collection>> CopyPublicCollectionAsync(long userId, long sourceCollectionId, string? newName = null)
         {
             var source = await collectionRepository.GetWithMangasAsync(sourceCollectionId);
-            if (source == null || !source.IsPublic)
+            if (source == null)
             {
-                // do not reveal existence of private collections
+                // do not reveal existence
+                return Result<Collection>.Failure("Collection not found");
+            }
+
+            // allow clone if public or owned by requester
+            if (!source.IsPublic && source.UserId != userId)
+            {
+                // do not reveal existence of private collections to others
                 return Result<Collection>.Failure("Collection not found");
             }
 
