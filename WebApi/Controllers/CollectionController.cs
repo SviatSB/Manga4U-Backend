@@ -49,7 +49,7 @@ namespace WebApi.Controllers
         {
             var user = await GetCurrentUserAsync();
 
-            var result = await collectionService.GetCollectionWithContentAsync(user.Id, collectionId);
+            var result = await collectionService.GetCollectionWithContentAsync(user?.Id, collectionId);
 
             if (!result.IsSucceed)
             {

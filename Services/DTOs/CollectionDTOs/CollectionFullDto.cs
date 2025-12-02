@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 using Domain.Models;
 
+using Services.DTOs.MangaDTOs;
+
 namespace Services.DTOs.CollectionDTOs
 {
     public class CollectionFullDto
@@ -16,6 +18,6 @@ namespace Services.DTOs.CollectionDTOs
         public DateTime CreationTime { get; set; }
         public SystemCollectionType? SystemCollectionType { get; set; }
         public long UserId { get; set; }
-        public ICollection<Manga> Mangas { get; set; } = new List<Manga>();
+        public ICollection<MangaShortDto> Mangas { get; set; } = new List<MangaShortDto>();
     }
 }

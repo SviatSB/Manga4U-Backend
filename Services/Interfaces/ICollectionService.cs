@@ -35,6 +35,6 @@ namespace Services.Interfaces
         Task<Result<IEnumerable<Collection>>> SearchPublicCollectionsByNameAsync(string name);
 
         // Получить коллекцию с её содержимым если она публична или принадлежит пользователю
-        Task<Result<Collection>> GetCollectionWithContentAsync(long userId, long collectionId);
+        Task<Result<Collection>> GetCollectionWithContentAsync(long? userId, long collectionId);
     }
 }

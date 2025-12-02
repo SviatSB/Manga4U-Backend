@@ -262,7 +262,7 @@ namespace Services.Services
             return Result<IEnumerable<Collection>>.Success(collections);
         }
 
-        public async Task<Result<Collection>> GetCollectionWithContentAsync(long userId, long collectionId)
+        public async Task<Result<Collection>> GetCollectionWithContentAsync(long? userId, long collectionId)
         {
             var collection = await collectionRepository.GetByIdWithContentAsync(collectionId);
             if (collection == null)

@@ -1,6 +1,7 @@
 ﻿using Domain.Models;
 
 using Services.DTOs.CollectionDTOs;
+using Services.DTOs.MangaDTOs;
 using Services.DTOs.ModelsDTOs;
 
 namespace Services
@@ -23,6 +24,23 @@ namespace Services
             };
         }
 
+        public static MangaShortDto CreateMangaShortDto(Manga manga)
+        {
+            return new MangaShortDto
+            {
+                Name = manga.Name,
+                ExternalId = manga.ExternalId
+            };
+        }
+
+        public static List<MangaShortDto> CreateMangaShortDto(IEnumerable<Manga> mangas)
+        {
+            return mangas
+                .Select(CreateMangaShortDto)
+                .ToList();
+        }
+
+
         public static CollectionShortDto CreateCollectionShortDto(Collection collection)
         {
             return new CollectionShortDto
@@ -44,6 +62,8 @@ namespace Services
                 IsPublic = collection.IsPublic,
                 CreationTime = collection.CreationTime,
                 SystemCollectionType = collection.SystemCollectionType,
+                UserId = collection.UserId,
+                Mangas = CreateMangaShortDto(collection.Mangas)
             };
         }
 
