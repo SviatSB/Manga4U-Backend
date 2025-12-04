@@ -15,5 +15,6 @@ namespace Services.Interfaces
         Task<Result> DeleteCommentAsync(long userId, long commentId);
         Task<Result<CommentPagedResult>> GetRootCommentsAsync(int take, int skip, string mangaChapterExternalId);
         Task<Result<CommentPagedResult>> GetCommentRepliesAsync(int take, int skip, long commentId);
+        Task<Result> SetPinnedStatusAsync(long userId, long commentId, bool isPinned);
     }
 }

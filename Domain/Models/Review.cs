@@ -11,6 +11,7 @@ namespace Domain.Models
         public int Stars { get; set; }  // 1-5
         public string? Text { get; set; } = null; //nullable | has default = null;
         public DateTime CreationTime { get; set; } = DateTime.Now; //notn null | has default
+        public bool IsPined { get; set; } = false; //not null | has default = false
 
 
         //FK and References

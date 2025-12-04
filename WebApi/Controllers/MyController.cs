@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 using Microsoft.AspNetCore.Mvc;
 
-using Services.DTOs.ModelsDTOs;
+using Services.DTOs.AccountDTOs;
 using Services.Interfaces;
 
 namespace WebApi.Controllers

@@ -18,7 +18,8 @@ namespace DataInfrastructure.Repository
         {
             var query = _myDbContext.Reviews
                 .Where(r => r.MangaId == mangaId)
-                .OrderByDescending(r => r.CreationTime);
+                .OrderByDescending(r => r.IsPined)
+                .ThenByDescending(r => r.CreationTime);
 
             var total = await query.CountAsync();
             var items = await query.Skip(skip).Take(take).Include(r => r.User).ToListAsync();

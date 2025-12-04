@@ -5,7 +5,7 @@ using Domain.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 
-using Services.DTOs.ModelsDTOs;
+using Services.DTOs.AccountDTOs;
 using Services.Interfaces;
 using Services.Results.Base;
 

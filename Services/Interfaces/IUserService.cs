@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-using Services.DTOs.ModelsDTOs;
+using Services.DTOs.AccountDTOs;
 
 namespace Services.Interfaces
 {

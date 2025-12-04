@@ -14,5 +14,6 @@ namespace Services.Interfaces
         Task<Result> DeleteReviewAsync(long userId, long reviewId);
         Task<Result<PagedResult<Review>>> GetReviewsByMangaAsync(string mangaExternalId, int skip, int take);
         Task<double> GetAverageStarsAsync(string mangaExternalId);
+        Task<Result> SetPinnedStatusAsync(long userId, long reviewId, bool isPinned);
     }
 }

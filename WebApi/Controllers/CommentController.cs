@@ -2,8 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 
 using Services;
-using Services.Interfaces;
 using Services.DTOs.CommentDTOs;
+using Services.DTOs.OtherDTOs;
+using Services.Interfaces;
+using Services.Services;
 
 namespace WebApi.Controllers
 {
@@ -70,6 +72,19 @@ namespace WebApi.Controllers
             var result = await commentService.DeleteCommentAsync(user.Id, commentId);
             if (!result.IsSucceed) return BadRequest(result.ErrorMessage);
 
+            return Ok();
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost("pin")]
+        public async Task<IActionResult> Pin([FromBody] PinDto dto)
+        {
+            var user = await GetCurrentUserAsync();
+            if (user is null) return Unauthorized();
+
+            var result = await commentService.SetPinnedStatusAsync(user.Id, dto.Id, dto.State);
+
+            if (!result.IsSucceed) return BadRequest(result.ErrorMessage);
             return Ok();
         }
     }

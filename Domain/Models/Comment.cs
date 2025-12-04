@@ -5,6 +5,7 @@
         public DateTime CreationTime { get; set; } = DateTime.Now; //not null | has default
         public string Text { get; set; } = null!; //not null
         public string ChapterExternalId { get; set; } = null!; //not null
+        public bool IsPined { get; set; } = false; //not null | has default = false
 
 
         //FK and References

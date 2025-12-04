@@ -1,7 +1,12 @@
-﻿using DataInfrastructure.Interfaces;
+﻿using System.ComponentModel.Design;
+
+using DataInfrastructure.Interfaces;
+using DataInfrastructure.Repository;
+
+using Domain.Models;
+
 using Services.Interfaces;
 using Services.Results.Base;
-using Domain.Models;
 
 namespace Services.Services
 {
@@ -23,6 +28,11 @@ namespace Services.Services
             var user = await _userRepository.FindAsync(userId);
             if (user is null) return Result.Failure("User not found");
 
+            if (user.IsMuted)
+            {
+                return Result.Failure("User is muted.");
+            }
+
             var mangaResult = await _mangaService.GetOrAdd(mangaExternalId);
             if (!mangaResult.IsSucceed) return Result.Failure("Manga not found");
 
@@ -36,7 +46,7 @@ namespace Services.Services
                 UserId = userId,
                 MangaId = manga.Id,
                 Stars = stars,
-                Text = text,
+                Text = string.IsNullOrWhiteSpace(text) ? null : text,
             };
 
             await _reviewRepository.AddAsync(review);
@@ -80,6 +90,37 @@ namespace Services.Services
             if (!mangaResult.IsSucceed) return 0.0;
             var manga = mangaResult.Value;
             return await _reviewRepository.GetAverageStarsAsync(manga.Id);
+        }
+
+        public async Task<Result> SetPinnedStatusAsync(long userId, long reviewId, bool isPinned)
+        {
+            var user = await _userRepository.FindAsync(userId);
+
+            if (user is null)
+            {
+                return Result.Failure("User not found.");
+            }
+
+            var review = await _reviewRepository.GetAsync(reviewId);
+
+            if (review is null)
+            {
+                return Result.Failure("Review not found.");
+            }
+
+            //----------------
+
+            var roles = await _userRepository.GetRolesAsync(user);
+
+            if (!roles.Contains("Admin"))
+            {
+                return Result.Failure("You do not have permission.");
+            }
+
+            review.IsPined = isPinned;
+
+            await _reviewRepository.SaveChangesAsync();
+            return Result.Success();
         }
     }
 }

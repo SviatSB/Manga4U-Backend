@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 
-using Services.DTOs.ModelsDTOs;
+using Services.DTOs.AccountDTOs;
 using Services.Results.Base;
 
 namespace Services.Interfaces

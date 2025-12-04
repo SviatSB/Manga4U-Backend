@@ -1,8 +1,9 @@
 ﻿using Domain.Models;
 
+using Services.DTOs.AccountDTOs;
 using Services.DTOs.CollectionDTOs;
+using Services.DTOs.CommentDTOs;
 using Services.DTOs.MangaDTOs;
-using Services.DTOs.ModelsDTOs;
 using Services.DTOs.ReviewDTOs;
 
 namespace Services
@@ -93,7 +94,8 @@ namespace Services
                 RepliedCommentId = comment.RepliedCommentId,
                 ChapterExternalId = comment.ChapterExternalId,
                 UserNickname = comment.User?.Nickname,
-                UserAvatarUrl = comment.User?.AvatarUrl
+                UserAvatarUrl = comment.User?.AvatarUrl,
+                IsPined = comment.IsPined
             };
         }
 
@@ -102,9 +104,9 @@ namespace Services
             return comments.Select(CreateCommentDto).ToList();
         }
 
-        public static ReviewResponseDto CreateReviewDto(Review review)
+        public static ReviewDto CreateReviewDto(Review review)
         {
-            return new ReviewResponseDto
+            return new ReviewDto
             {
                 Id = review.Id,
                 Stars = review.Stars,
@@ -112,11 +114,12 @@ namespace Services
                 CreationTime = review.CreationTime,
                 UserId = review.UserId,
                 UserNickname = review.User?.Nickname,
-                UserAvatarUrl = review.User?.AvatarUrl
+                UserAvatarUrl = review.User?.AvatarUrl,
+                IsPined = review.IsPined
             };
         }
 
-        public static List<ReviewResponseDto> CreateReviewDto(IEnumerable<Review> reviews)
+        public static List<ReviewDto> CreateReviewDto(IEnumerable<Review> reviews)
         {
             return reviews.Select(CreateReviewDto).ToList();
         }

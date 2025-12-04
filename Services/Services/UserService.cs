@@ -1,6 +1,6 @@
 using DataInfrastructure.Interfaces;
 
-using Services.DTOs.ModelsDTOs;
+using Services.DTOs.AccountDTOs;
 using Services.Interfaces;
 
 namespace Services.Services

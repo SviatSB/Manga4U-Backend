@@ -19,7 +19,8 @@ namespace DataInfrastructure.Repository
             // root comments are those with RepliedCommentId == null
             var query = _myDbContext.Comments
                 .Where(c => c.ChapterExternalId == chapterExternalId && c.RepliedCommentId == null)
-                .OrderByDescending(c => c.CreationTime);
+                .OrderByDescending(c => c.IsPined)
+                .ThenByDescending(c => c.CreationTime);
 
             var total = await query.CountAsync();
 
@@ -44,7 +45,8 @@ namespace DataInfrastructure.Repository
         {
             var query = _myDbContext.Comments
                 .Where(c => c.RepliedCommentId == parentCommentId)
-                .OrderByDescending(c => c.CreationTime);
+                .OrderByDescending(c => c.IsPined)
+                .ThenByDescending(c => c.CreationTime);
 
             var total = await query.CountAsync();
 

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-using Services.DTOs.ModelsDTOs;
+using Services.DTOs.AccountDTOs;
 using Services.Interfaces;
 using Services.Results.Base;
 

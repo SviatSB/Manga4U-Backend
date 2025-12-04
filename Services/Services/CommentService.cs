@@ -1,8 +1,12 @@
-﻿using DataInfrastructure.Interfaces;
+﻿using System.ComponentModel.Design;
+
+using DataInfrastructure.Interfaces;
+
+using Domain.Models;
+
 using Services.Interfaces;
 using Services.Results.Base;
 using Services.Results.Custom;
-using Domain.Models;
 
 namespace Services.Services
 {
@@ -114,6 +118,37 @@ namespace Services.Services
             };
 
             return Result<CommentPagedResult>.Success(result);
+        }
+
+        public async Task<Result> SetPinnedStatusAsync(long userId, long commentId, bool isPinned)
+        {
+            var user = await userRepository.FindAsync(userId);
+
+            if (user is null)
+            {
+                return Result.Failure("User not found.");
+            }
+
+            var comment = await commentRepository.GetAsync(commentId);
+
+            if (comment is null)
+            {
+                return Result.Failure("Comment not found.");
+            }
+
+            //----------------
+
+            var roles = await userRepository.GetRolesAsync(user);
+
+            if (!roles.Contains("Admin"))
+            {
+                return Result.Failure("You do not have permission.");
+            }
+
+            comment.IsPined = isPinned;
+
+            await commentRepository.SaveChangesAsync();
+            return Result.Success();
         }
     }
 }

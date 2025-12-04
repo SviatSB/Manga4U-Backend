@@ -2,9 +2,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using Services;
-using Services.Interfaces;
+using Services.DTOs.OtherDTOs;
 using Services.DTOs.ReviewDTOs;
+using Services.Interfaces;
 using Services.Results.Base;
+using Services.Services;
 
 namespace WebApi.Controllers
 {
@@ -14,7 +16,7 @@ namespace WebApi.Controllers
     {
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> AddReview([FromBody] AddReviewRequest req)
+        public async Task<IActionResult> AddReview([FromBody] AddReviewDto req)
         {
             var user = await GetCurrentUserAsync();
             if (user is null) return Unauthorized();
@@ -42,7 +44,7 @@ namespace WebApi.Controllers
             var result = await reviewService.GetReviewsByMangaAsync(mangaExternalId, skip, take);
             if (!result.IsSucceed) return BadRequest(result.ErrorMessage);
 
-            var dto = new
+            var dto = new ReviewPagedDto
             {
                 TotalCount = result.Value.TotalCount,
                 Items = DtoConvertor.CreateReviewDto(result.Value.Items)
@@ -58,11 +60,17 @@ namespace WebApi.Controllers
             return Ok(new { Average = avg });
         }
 
-        public class AddReviewRequest
+        [Authorize(Roles = "Admin")]
+        [HttpPost("pin")]
+        public async Task<IActionResult> Pin([FromBody] PinDto dto)
         {
-            public string MangaExternalId { get; set; } = null!;
-            public int Stars { get; set; }
-            public string? Text { get; set; }
+            var user = await GetCurrentUserAsync();
+            if (user is null) return Unauthorized();
+
+            var result = await reviewService.SetPinnedStatusAsync(user.Id, dto.Id, dto.State);
+
+            if (!result.IsSucceed) return BadRequest(result.ErrorMessage);
+            return Ok();
         }
     }
 }
