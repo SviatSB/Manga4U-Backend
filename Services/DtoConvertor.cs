@@ -22,7 +22,9 @@ namespace Services
                 IsMuted = user.IsMuted,
                 IsBanned = user.IsBanned,
                 AvatarUrl = user.AvatarUrl,
-                Roles = roles
+                Roles = roles,
+                RegistrationTime = user.RegistrationTime,
+                LastActivity = user.LastActivity
             };
         }
 

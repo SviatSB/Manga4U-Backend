@@ -13,9 +13,9 @@ namespace DataInfrastructure.Extensions
 {
     public static class StatExtension
     {
-        public static IServiceCollection AddAppStat(this IServiceCollection services)
+        public static IServiceCollection AddStatQuery(this IServiceCollection services)
         {
-            return services.AddScoped<IStatService, StatService>();
+            return services.AddScoped<IStatQueryService, StatQueryService>();
         }
     }
 }

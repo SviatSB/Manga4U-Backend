@@ -10,7 +10,7 @@ namespace WebApi.Extensions
                 .AddAppDataBase()
                 .AddAppRepository()
                 .AddAppAzureStorage()
-                .AddAppStat();
+                .AddStatQuery();
 
             return services;
         }

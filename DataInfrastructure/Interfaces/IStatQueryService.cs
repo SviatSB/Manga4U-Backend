@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DataInfrastructure.Interfaces
 {
-    public interface IStatService
+    public interface IStatQueryService
     {
         Task<int> GetRegistrationCountAsync(DateTime? start = null, DateTime? end = null);
         Task<int> GetReviewCountAsync(DateTime? start = null, DateTime? end = null);
@@ -15,6 +15,7 @@ namespace DataInfrastructure.Interfaces
 
         //--- hard
 
-        Task<int> GetAvarageRatingAsync(List<string>? genreExternalIds);
+        Task<List<(string, int)>> GetAvarageRatingAsync(List<string>? genreExternalIds);
+        Task<int> GetActiveUserCountAsync(DateTime? start = null, DateTime? end = null);
     }
 }

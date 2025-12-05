@@ -11,6 +11,8 @@
         public IList<string> Roles { get; set; } = new List<string>();
         public string? AboutMyself { get; set; }
         public string Language { get; set; } = null!;
+        public DateTime RegistrationTime { get; set; }
+        public DateTime LastActivity { get; set; }
 
         // Note: PasswordHash is excluded for security reasons
     }
