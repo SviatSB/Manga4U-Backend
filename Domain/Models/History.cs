@@ -6,7 +6,7 @@
         public string Language { get; set; } = null!;
         public string LastChapterTitle { get; set; } = null!;
         public int LastChapterNumber { get; set; }
-        public DateTime UpdatedAt { get; set; } = DateTime.Now; //not null | has default
+        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow; //not null | has default
 
         public string MangaExternalId { get; set; } = null!;
 

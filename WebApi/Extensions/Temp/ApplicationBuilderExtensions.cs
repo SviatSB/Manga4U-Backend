@@ -1,3 +1,5 @@
+using Services.Extensions;
+
 namespace WebApi.Extensions.Temp
 {
     public static class ApplicationBuilderExtensions
@@ -20,6 +22,7 @@ namespace WebApi.Extensions.Temp
             app.UseCors(corsPolicy);
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseUserActivity();
             app.MapControllers();
             return app;
         }

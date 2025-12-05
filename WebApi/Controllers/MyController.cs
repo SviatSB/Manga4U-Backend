@@ -8,7 +8,7 @@ using Services.Interfaces;
 
 namespace WebApi.Controllers
 {
-    public class MyController(IUserService userService) : ControllerBase
+    public abstract class MyController(IUserService userService) : ControllerBase
     {
         protected string? ContextLogin { get => User.Identity?.Name; }
         protected async Task<UserDto?> GetCurrentUserAsync()

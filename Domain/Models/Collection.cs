@@ -2,7 +2,7 @@
 {
     public class Collection : EntityBase
     {
-        public DateTime CreationTime { get; set; } = DateTime.Now; //not null | has default
+        public DateTime CreationTime { get; set; } = DateTime.UtcNow; //not null | has default
         public string Name { get; set; } = null!;  //not null
         public bool IsPublic { get; set; } = false; //not null | has default
         public SystemCollectionType? SystemCollectionType { get; set; } = null; //nullable | has default

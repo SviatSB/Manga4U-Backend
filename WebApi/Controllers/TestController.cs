@@ -41,5 +41,16 @@ namespace WebApi.Controllers
         {
             return Ok(await this.GetCurrentUserAsync());
         }
+
+        [Authorize]
+        [HttpGet("debug-claims")]
+        public IActionResult DebugClaims()
+        {
+            var dict = User.Claims
+                .Select(c => new { c.Type, c.Value });
+
+            return Ok(dict);
+        }
+
     }
 }

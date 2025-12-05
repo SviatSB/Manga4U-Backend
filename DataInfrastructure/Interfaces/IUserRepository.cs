@@ -39,6 +39,8 @@ namespace DataInfrastructure.Interfaces
         Task<bool> IsAdmin(User user);
         Task<bool> IsOwner(User user);
 
+        Task UpdateActivity(User user); 
+
         Task<(IReadOnlyList<User> Users, int TotalCount)> QueryUsersAsync(
             int skip,
             int take,

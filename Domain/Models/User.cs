@@ -21,7 +21,8 @@ namespace Domain.Models
         public bool IsMuted { get; set; } = false; //not null | has default
         public bool IsBanned { get; set; } = false; //not null | has default
         public string AvatarUrl { get; set; } = "https://mangastorageaccount.blob.core.windows.net/avatars/default.png"; //not null | has default
-
+        public DateTime RegistrationTime { get; set; } = DateTime.UtcNow; //not null | has default
+        public DateTime LastActivity { get; set; } = DateTime.UtcNow; //not null | has default
 
         //FK and References
         public ICollection<Collection> Collections { get; set; } = new List<Collection>();

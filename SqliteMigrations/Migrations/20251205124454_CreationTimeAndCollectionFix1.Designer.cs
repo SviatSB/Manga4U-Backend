@@ -3,6 +3,7 @@ using System;
 using DataInfrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace SqliteMigrations.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251205124454_CreationTimeAndCollectionFix1")]
+    partial class CreationTimeAndCollectionFix1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.9");
@@ -28,9 +31,6 @@ namespace SqliteMigrations.Migrations
                     b.HasKey("CollectionsId", "MangasId");
 
                     b.HasIndex("MangasId");
-
-                    b.HasIndex("CollectionsId", "MangasId")
-                        .IsUnique();
 
                     b.ToTable("CollectionManga");
                 });
@@ -253,9 +253,6 @@ namespace SqliteMigrations.Migrations
 
                     b.Property<string>("Language")
                         .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("LastActivity")
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("LockoutEnabled")

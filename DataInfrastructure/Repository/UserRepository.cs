@@ -225,5 +225,11 @@ namespace DataInfrastructure.Repository
 
             return (users, total);
         }
+
+        public Task UpdateActivity(User user)
+        {
+            user.LastActivity = DateTime.UtcNow;
+            return _userManager.UpdateAsync(user);
+        }
     }
 }
