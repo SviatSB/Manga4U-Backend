@@ -14,7 +14,7 @@ namespace DataInfrastructure.Repository
     {
         public CommentRepository(MyDbContext myDbContext) : base(myDbContext) { }
 
-        public async Task<(IReadOnlyList<Comment> Items, int TotalCount, int ReplyCount)> GetRootCommentsByChapterAsync(string chapterExternalId, int skip, int take)
+        public async Task<(IReadOnlyList<Comment> Items, int TotalCount, Dictionary<long,int> ReplyCounts)> GetRootCommentsByChapterAsync(string chapterExternalId, int skip, int take)
         {
             // root comments are those with RepliedCommentId == null
             var query = _myDbContext.Comments
@@ -30,15 +30,28 @@ namespace DataInfrastructure.Repository
                 .Include(c => c.User)
                 .ToListAsync();
 
-            // count replies for these root comments
+            // count replies for these root comments individually
             var rootIds = items.Select(c => c.Id).ToArray();
-            int replyCount = 0;
+            var replyCounts = new Dictionary<long,int>();
+
             if (rootIds.Length > 0)
             {
-                replyCount = await _myDbContext.Comments.CountAsync(c => c.RepliedCommentId != null && rootIds.Contains(c.RepliedCommentId.Value));
+                var counts = await _myDbContext.Comments
+                    .Where(c => c.RepliedCommentId != null && rootIds.Contains(c.RepliedCommentId.Value))
+                    .GroupBy(c => c.RepliedCommentId!.Value)
+                    .Select(g => new { Id = g.Key, Count = g.Count() })
+                    .ToListAsync();
+
+                replyCounts = counts.ToDictionary(x => x.Id, x => x.Count);
+
+                // ensure all root ids are present with zero default
+                foreach (var id in rootIds)
+                {
+                    if (!replyCounts.ContainsKey(id)) replyCounts[id] = 0;
+                }
             }
 
-            return (items, total, replyCount);
+            return (items, total, replyCounts);
         }
 
         public async Task<(IReadOnlyList<Comment> Items, int TotalCount, int ReplyCount)> GetRepliesByCommentIdAsync(long parentCommentId, int skip, int take)

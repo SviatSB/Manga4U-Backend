@@ -12,6 +12,6 @@ namespace Services.Results.Custom
 {
     public class CommentPagedResult : PagedResult<Comment>
     {
-        public int ReplyCount { get; set; }
+        public Dictionary<long,int> ReplyCounts { get; set; } = new Dictionary<long,int>();
     }
 }

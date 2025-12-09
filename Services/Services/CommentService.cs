@@ -97,7 +97,7 @@ namespace Services.Services
             {
                 TotalCount = total,
                 Items = items.ToList(),
-                ReplyCount = replyCount
+                ReplyCounts = new Dictionary<long,int> { [commentId] = replyCount }
             };
 
             return Result<CommentPagedResult>.Success(result);
@@ -108,13 +108,15 @@ namespace Services.Services
             if (string.IsNullOrWhiteSpace(mangaChapterExternalId))
                 return Result<CommentPagedResult>.Failure("Chapter id is required");
 
-            var (items, total, replyCount) = await commentRepository.GetRootCommentsByChapterAsync(mangaChapterExternalId, skip, take);
+            var (items, total, replyCounts) = await commentRepository.GetRootCommentsByChapterAsync(mangaChapterExternalId, skip, take);
+
+            var dtoItems = items.ToList();
 
             var result = new CommentPagedResult
             {
                 TotalCount = total,
-                Items = items.ToList(),
-                ReplyCount = replyCount
+                Items = dtoItems,
+                ReplyCounts = replyCounts
             };
 
             return Result<CommentPagedResult>.Success(result);
@@ -143,6 +145,12 @@ namespace Services.Services
             if (!roles.Contains("Admin"))
             {
                 return Result.Failure("You do not have permission.");
+            }
+
+            // Prevent pinning a comment that is a reply to another comment
+            if (isPinned && comment.RepliedCommentId != null)
+            {
+                return Result.Failure("Cannot pin a reply comment.");
             }
 
             comment.IsPined = isPinned;

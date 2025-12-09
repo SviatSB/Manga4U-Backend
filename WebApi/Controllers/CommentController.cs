@@ -5,7 +5,7 @@ using Services;
 using Services.DTOs.CommentDTOs;
 using Services.DTOs.OtherDTOs;
 using Services.Interfaces;
-using Services.Services;
+using Services.Results.Custom;
 
 namespace WebApi.Controllers
 {
@@ -21,14 +21,26 @@ namespace WebApi.Controllers
 
             var items = DtoConvertor.CreateCommentDto(result.Value.Items);
 
-            var dto = new CommentPagedDto
+            // if reply counts available, apply to DTOs
+            if (result.Value.ReplyCounts != null && result.Value.ReplyCounts.Count > 0)
+            {
+                foreach (var itemDto in items)
+                {
+                    if (result.Value.ReplyCounts.TryGetValue(itemDto.Id, out var rc))
+                        itemDto.ReplyCount = rc;
+                }
+            }
+
+            var totalReplies = result.Value.ReplyCounts?.Values.Sum() ?? 0;
+
+            var responseDto = new CommentPagedDto
             {
                 TotalCount = result.Value.TotalCount,
-                ReplyCount = result.Value.ReplyCount,
+                ReplyCount = totalReplies,
                 Items = items
             };
 
-            return Ok(dto);
+            return Ok(responseDto);
         }
 
         [HttpGet("{commentId}/replies")]
@@ -39,14 +51,16 @@ namespace WebApi.Controllers
 
             var items = DtoConvertor.CreateCommentDto(result.Value.Items);
 
-            var dto = new CommentPagedDto
+            var totalReplies = result.Value.ReplyCounts?.Values.Sum() ?? 0;
+
+            var responseDto = new CommentPagedDto
             {
                 TotalCount = result.Value.TotalCount,
-                ReplyCount = result.Value.ReplyCount,
+                ReplyCount = totalReplies,
                 Items = items
             };
 
-            return Ok(dto);
+            return Ok(responseDto);
         }
 
         [Authorize]

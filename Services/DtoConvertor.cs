@@ -97,7 +97,8 @@ namespace Services
                 ChapterExternalId = comment.ChapterExternalId,
                 UserNickname = comment.User?.Nickname,
                 UserAvatarUrl = comment.User?.AvatarUrl,
-                IsPined = comment.IsPined
+                IsPined = comment.IsPined,
+                ReplyCount = 0
             };
         }
 

@@ -10,7 +10,7 @@ namespace WebApi.Controllers
     [Route("api/[controller]")]
     public class StatController(IUserService userService, IStatService statService) : MyController(userService)
     {
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpGet("active")]
         public async Task<IActionResult> GetActive([FromQuery] DateTime? start = null, [FromQuery] DateTime? end = null)
         {
@@ -22,7 +22,7 @@ namespace WebApi.Controllers
             return Ok(result.Value);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpGet("registrations")]
         public async Task<IActionResult> GetRegistrations([FromQuery] DateTime? start = null, [FromQuery] DateTime? end = null)
         {
@@ -34,7 +34,7 @@ namespace WebApi.Controllers
             return Ok(result.Value);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpGet("reviews")]
         public async Task<IActionResult> GetReviews([FromQuery] DateTime? start = null, [FromQuery] DateTime? end = null)
         {
@@ -46,7 +46,7 @@ namespace WebApi.Controllers
             return Ok(result.Value);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpGet("comments")]
         public async Task<IActionResult> GetComments([FromQuery] DateTime? start = null, [FromQuery] DateTime? end = null)
         {
@@ -58,7 +58,7 @@ namespace WebApi.Controllers
             return Ok(result.Value);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpGet("collections")]
         public async Task<IActionResult> GetCollections([FromQuery] DateTime? start = null, [FromQuery] DateTime? end = null)
         {
@@ -70,7 +70,7 @@ namespace WebApi.Controllers
             return Ok(result.Value);
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpPost("genres/average")]
         public async Task<IActionResult> GetAverageByGenres([FromBody] List<string>? genreExternalIds)
         {

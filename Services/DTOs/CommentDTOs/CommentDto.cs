@@ -11,5 +11,6 @@
         public string? UserNickname { get; set; }
         public string? UserAvatarUrl { get; set; }
         public bool IsPined { get; set; }
+        public int ReplyCount { get; set; }
     }
 }

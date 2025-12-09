@@ -26,6 +26,7 @@ namespace Services.Extensions
                 c.BaseAddress = new Uri("https://api.mangadex.org");
                 c.DefaultRequestHeaders.Add("User-Agent", proxyOptions.UserAgent);
             });
+            services.AddScoped<IStatService, StatService>();
 
             return services;
         }
