@@ -32,7 +32,7 @@ namespace DataInfrastructure
                     .HasOne(c => c.RepliedComment)
                     .WithMany(c => c.RepliesComments)
                     .HasForeignKey(c => c.RepliedCommentId)
-                    .OnDelete(DeleteBehavior.Cascade);
+                    .OnDelete(DeleteBehavior.ClientCascade);
 
                 //builder
                 //    .Property(c => c.CreationTime)
