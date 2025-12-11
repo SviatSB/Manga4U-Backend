@@ -52,7 +52,14 @@ namespace Services.Services
             if (_cache.TryGetValue(uri, out string? cached))
                 return Result<string>.Success(cached);
 
-            var response = await _httpClient.GetAsync(uri);
+            var request = new HttpRequestMessage(HttpMethod.Get, uri);
+
+            request.Headers.Remove("Referer");
+            request.Headers.Remove("Origin");
+
+            request.Headers.TryAddWithoutValidation("User-Agent", "Mozilla/5.0");
+
+            var response = await _httpClient.SendAsync(request);
             var result = await response.Content.ReadAsStringAsync();
 
             _cache.Set(uri, result, _cacheOptions);
