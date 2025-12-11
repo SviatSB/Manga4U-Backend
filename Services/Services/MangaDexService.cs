@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json;
@@ -17,12 +18,14 @@ namespace Services.Services
         private readonly HttpClient _httpClient;
         private readonly IMemoryCache _cache;
         private readonly MemoryCacheEntryOptions _cacheOptions;
+        private readonly ILogger<MangaDexService> _logger;
 
-        public MangaDexService(HttpClient httpClient, IMemoryCache cache, IOptions<MemoryCacheEntryOptions> cacheOptions)
+        public MangaDexService(HttpClient httpClient, IMemoryCache cache, IOptions<MemoryCacheEntryOptions> cacheOptions, ILogger<MangaDexService> logger)
         {
             _httpClient = httpClient;
             _cache = cache;
             _cacheOptions = cacheOptions.Value;
+            _logger = logger;
         }
 
         public async Task<Result<RootResponse>> GetMangaAsync(string id)
@@ -48,17 +51,60 @@ namespace Services.Services
         public async Task<Result<string>> ProxyGetAsync(string path, IQueryCollection query)
         {
             string uri = BuildUri(path, query);
+            _logger.LogInformation("Proxy request: {Uri}", uri);
 
             if (_cache.TryGetValue(uri, out string? cached))
+            {
+                _logger.LogInformation("Cache hit for {Uri}", uri);
                 return Result<string>.Success(cached);
+            }
 
             var request = new HttpRequestMessage(HttpMethod.Get, uri);
 
+            // Удаляем опасные заголовки
             request.Headers.Remove("Referer");
             request.Headers.Remove("Origin");
 
-            var response = await _httpClient.SendAsync(request);
-            var result = await response.Content.ReadAsStringAsync();
+            _logger.LogInformation("Outgoing request headers:");
+
+            foreach (var header in request.Headers)
+                _logger.LogInformation("  {Key}: {Value}", header.Key, string.Join(", ", header.Value));
+
+            var response = await _httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
+
+            _logger.LogInformation("Response status: {Status}", response.StatusCode);
+
+            _logger.LogInformation("Response headers:");
+            foreach (var header in response.Headers)
+                _logger.LogInformation("  {Key}: {Value}", header.Key, string.Join(", ", header.Value));
+
+            _logger.LogInformation("Response content headers:");
+            foreach (var ch in response.Content.Headers)
+                _logger.LogInformation("  {Key}: {Value}", ch.Key, string.Join(", ", ch.Value));
+
+            var contentType = response.Content.Headers.ContentType?.MediaType;
+            _logger.LogInformation("Content-Type: {ContentType}", contentType);
+
+            var buffer = await response.Content.ReadAsByteArrayAsync();
+
+            bool isText = contentType != null &&
+                          (contentType.Contains("json") ||
+                           contentType.Contains("text") ||
+                           contentType.Contains("javascript") ||
+                           contentType.Contains("xml"));
+
+            string result;
+
+            if (isText)
+            {
+                result = System.Text.Encoding.UTF8.GetString(buffer);
+                _logger.LogInformation("Received TEXT content (length {Len})", result.Length);
+            }
+            else
+            {
+                result = Convert.ToBase64String(buffer);
+                _logger.LogInformation("Received BINARY content (bytes {Len}), returned as base64", buffer.Length);
+            }
 
             _cache.Set(uri, result, _cacheOptions);
 
