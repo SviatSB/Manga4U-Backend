@@ -57,8 +57,6 @@ namespace Services.Services
             request.Headers.Remove("Referer");
             request.Headers.Remove("Origin");
 
-            request.Headers.TryAddWithoutValidation("User-Agent", "Mozilla/5.0");
-
             var response = await _httpClient.SendAsync(request);
             var result = await response.Content.ReadAsStringAsync();
 
