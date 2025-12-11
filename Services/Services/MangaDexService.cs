@@ -53,7 +53,7 @@ namespace Services.Services
             string uri = BuildUri(path, query);
             _logger.LogInformation("Proxy request: {Uri}", uri);
 
-            if (_cache.TryGetValue(uri, out string? cached))
+            if (false && _cache.TryGetValue(uri, out string? cached))
             {
                 _logger.LogInformation("Cache hit for {Uri}", uri);
                 return Result<string>.Success(cached);
