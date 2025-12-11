@@ -11,7 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="sharedsettings.json">
+	  <Content Include="sharedsettings.json"
+			   Condition="Exists('sharedsettings.json')">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
