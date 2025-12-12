@@ -12,5 +12,7 @@ namespace DataInfrastructure.Interfaces
     {
         Task<(IReadOnlyList<Comment> Items, int TotalCount, Dictionary<long,int> ReplyCounts)> GetRootCommentsByChapterAsync(string chapterExternalId, int skip, int take);
         Task<(IReadOnlyList<Comment> Items, int TotalCount, int ReplyCount)> GetRepliesByCommentIdAsync(long parentCommentId, int skip, int take);
+        Task<List<long>> GetAllDescendantIdsAsync(long rootCommentId);
+        Task DeleteByIdsAsync(IEnumerable<long> ids);
     }
 }

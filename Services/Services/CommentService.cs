@@ -78,7 +78,19 @@ namespace Services.Services
                 return Result.Failure("You do not have permission to delete this comment.");
             }
 
-            await commentRepository.DeleteAsync(comment.Id);
+            // Use repository method to get all descendant ids including root in BFS/optimized manner
+            var idsToDelete = await commentRepository.GetAllDescendantIdsAsync(commentId);
+
+            if (idsToDelete == null || idsToDelete.Count == 0)
+            {
+                // nothing to delete (shouldn't happen as root exists), but ensure root is deleted
+                await commentRepository.DeleteAsync(commentId);
+                return Result.Success();
+            }
+
+            // repository will delete in order safe for no-action FK
+            await commentRepository.DeleteByIdsAsync(idsToDelete);
+
             return Result.Success();
         }
 

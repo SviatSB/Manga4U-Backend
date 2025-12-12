@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 using DataInfrastructure.Interfaces;
 
 using Domain.Models;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace DataInfrastructure.Repository
@@ -73,6 +75,44 @@ namespace DataInfrastructure.Repository
             int replyCount = total;
 
             return (items, total, replyCount);
+        }
+
+        public async Task<List<long>> GetAllDescendantIdsAsync(long rootCommentId)
+        {
+            var result = new List<long>();
+            var q = new Queue<long>();
+            q.Enqueue(rootCommentId);
+
+            while (q.Count > 0)
+            {
+                var current = q.Dequeue();
+                result.Add(current);
+
+                var children = await _myDbContext.Comments
+                    .Where(c => c.RepliedCommentId == current)
+                    .Select(c => c.Id)
+                    .ToListAsync();
+
+                foreach (var childId in children)
+                    q.Enqueue(childId);
+            }
+
+            return result;
+        }
+
+        public async Task DeleteByIdsAsync(IEnumerable<long> ids)
+        {
+            // delete in reverse order to remove children before parents
+            var ordered = ids.Reverse().ToList();
+
+            foreach (var id in ordered)
+            {
+                var entity = await _set.FindAsync(id);
+                if (entity != null)
+                    _set.Remove(entity);
+            }
+
+            await _myDbContext.SaveChangesAsync();
         }
     }
 }

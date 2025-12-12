@@ -510,7 +510,7 @@ namespace SqlServerMigrations.Migrations
                     b.HasOne("Domain.Models.Comment", "RepliedComment")
                         .WithMany("RepliesComments")
                         .HasForeignKey("RepliedCommentId")
-                        .OnDelete(DeleteBehavior.ClientCascade);
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("Domain.Models.User", "User")
                         .WithMany("Comments")
