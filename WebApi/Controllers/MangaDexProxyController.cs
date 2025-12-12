@@ -31,5 +31,19 @@ namespace WebApi.Controllers
 
             return BadRequest(result.ErrorMessage);
         }
+
+        [HttpGet("image")]
+        public async Task<IActionResult> GetImage([FromQuery] string url)
+        {
+            Console.WriteLine("сработало");
+
+            var (bytes, contentType, error) = await _proxy.ProxyImageAsync(url);
+
+            if (error != null)
+                return BadRequest(error);
+
+            return File(bytes!, contentType!);
+        }
+
     }
 }
