@@ -158,5 +158,19 @@ namespace WebApi.Controllers
 
             return Ok(result);
         }
+
+        [AllowAnonymous]
+        [HttpGet("count")]
+        public async Task<ActionResult> Count()
+        {
+            var result = await _accountService.GetUsersAsync(
+                skip: 0,
+                take: 1,
+                nickname: null,
+                login: null,
+                roles: null
+            );
+            return Ok(new { total = result.TotalCount });
+        }
     }
 }
