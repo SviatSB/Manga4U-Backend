@@ -58,6 +58,7 @@ namespace DataInfrastructure.Other
         public async Task<int> GetCollectionCountAsync(DateTime? start = null, DateTime? end = null)
         {
             var query = myDbContext.Collections.AsQueryable()
+                .Where(c => c.SystemCollectionType == null)
                 .Where(c => c.CreationTime >= ValidDateMin);
 
             if (start.HasValue)
