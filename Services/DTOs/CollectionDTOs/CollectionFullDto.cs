@@ -18,6 +18,8 @@ namespace Services.DTOs.CollectionDTOs
         public DateTime CreationTime { get; set; }
         public SystemCollectionType? SystemCollectionType { get; set; }
         public long UserId { get; set; }
+        public string? UserNickname { get; set; }
+        public string? UserAvatarUrl { get; set; }
         public ICollection<MangaShortDto> Mangas { get; set; } = new List<MangaShortDto>();
     }
 }

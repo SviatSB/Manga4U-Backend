@@ -67,6 +67,8 @@ namespace Services
                 CreationTime = collection.CreationTime,
                 SystemCollectionType = collection.SystemCollectionType,
                 UserId = collection.UserId,
+                UserNickname = collection.User?.Nickname,
+                UserAvatarUrl = collection.User?.AvatarUrl,
                 Mangas = CreateMangaShortDto(collection.Mangas)
             };
         }
